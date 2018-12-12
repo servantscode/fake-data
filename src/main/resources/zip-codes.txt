@@ -1,0 +1,346 @@
+75002, Allen
+75009, Celina
+75013, Allen
+75023, Plano
+75024, Plano
+75025, Plano
+75026, Plano
+75034, Frisco
+75034, The Colony
+75035, Frisco
+75069, Fairview
+75069, McKinney
+75070, McKinney
+75071, McKinney
+75074, Plano
+75075, Plano
+75078, Prosper
+75086, Plano
+75093, Plano
+75094, Murphy
+75094, Plano
+75097, Weston
+75098, St. Paul
+75098, Wylie
+75121, Copeville
+75164, Josephine
+75166, Lavon
+75173, Nevada
+75252, Dallas
+75287, Dallas
+75407, Princeton
+75409, Anna
+75424, Blue Ridge
+75442, Farmersville
+75454, Melissa
+75485, Westminster
+Code, City
+75001, Addison
+75006, Carrollton
+75011, Carrollton
+75014, Irving
+75015, Irving
+75016, Irving
+75017, Irving
+75019, Coppell
+75030, Rowlett
+75038, Irving
+75039, Irving
+75040, Garland
+75041, Garland
+75042, Garland
+75043, Garland
+75044, Garland
+75045, Garland
+75046, Garland
+75047, Garland
+75048, Garland
+75048, Sachse
+75049, Garland
+75050, Grand Prairie
+75051, Grand Prairie
+75052, Grand Prairie
+75053, Grand Prairie
+75054, Grand Prairie
+75060, Irving
+75061, Irving
+75062, Irving
+75063, Irving
+75080, Richardson
+75081, Richardson
+75082, Richardson
+75083, Richardson
+75085, Richardson
+75088, Rowlett
+75089, Rowlett
+75104, Cedar Hill
+75106, Cedar Hill
+75115, DeSoto
+75116, Duncanville
+75123, DeSoto
+75134, Lancaster
+75137, Duncanville
+75138, Duncanville
+75141, Hutchins
+75146, Lancaster
+75149, Mesquite
+75150, Mesquite
+75159, Combine
+75159, Seagoville
+75172, Wilmer
+75180, Balch Springs
+75180, Mesquite
+75181, Mesquite
+75182, Mesquite
+75182, Sunnyvale
+75185, Mesquite
+75187, Mesquite
+75201, Dallas
+75202, Dallas
+75203, Dallas
+75204, Dallas
+75205, Dallas
+75206, Dallas
+75207, Dallas
+75208, Dallas
+75209, Dallas
+75210, Dallas
+75211, Dallas
+75212, Dallas
+75214, Dallas
+75215, Dallas
+75216, Dallas
+75217, Dallas
+75218, Dallas
+75219, Dallas
+75220, Dallas
+75221, Dallas
+75222, Dallas
+75223, Dallas
+75224, Dallas
+75225, Dallas
+75226, Dallas
+75227, Dallas
+75228, Dallas
+75229, Dallas
+75230, Dallas
+75231, Dallas
+75232, Dallas
+75233, Dallas
+75234, Dallas
+75234, Farmers Branch
+75235, Dallas
+75236, Dallas
+75237, Dallas
+75238, Dallas
+75239, Dallas
+75240, Dallas
+75241, Dallas
+75242, Dallas
+75243, Dallas
+75244, Dallas
+75244, Farmers Branch
+75245, Dallas
+75246, Dallas
+75247, Dallas
+75248, Dallas
+75249, Dallas
+75250, Dallas
+75251, Dallas
+75253, Dallas
+75254, Dallas
+75258, Dallas
+75260, Dallas
+75261, Dallas
+75262, Dallas
+75263, Dallas
+75264, Dallas
+75265, Dallas
+75266, Dallas
+75267, Dallas
+75270, Dallas
+75295, Dallas
+75313, Dallas
+75315, Dallas
+75336, Dallas
+75339, Dallas
+75342, Dallas
+75354, Dallas
+75355, Dallas
+75356, Dallas
+75357, Dallas
+75359, Dallas
+75360, Dallas
+75367, Dallas
+75370, Dallas
+75371, Dallas
+75372, Dallas
+75374, Dallas
+75376, Dallas
+75378, Dallas
+75379, Dallas
+75380, Dallas
+75381, Dallas
+75382, Dallas
+75398, Dallas
+75007, Carrollton
+75008, Carrollton
+75010, Carrollton
+75022, Flowermound
+75022, Flower Mound
+75022, Lewisville
+75027, Flower Mound
+75027, Lewisville
+75028, Flower Mound
+75028, Lewisville
+75029, Lewisville
+75056, Lewisville
+75056, The Colony
+75057, Lewisville
+75065, Lake Dallas
+75067, Lewisville
+75068, Lakewood Village
+75068, Little Elm
+75068, Oak Point
+75077, Double Oak
+75077, Highland Village
+75077, Lewisville
+76201, Denton
+76202, Denton
+76203, Denton
+76204, Denton
+76205, Denton
+76206, Denton
+76207, Denton
+76208, Corinth
+76208, Denton
+76208, Shady Shores
+76209, Denton
+76210, Corinth
+76210, Denton
+76226, Argyle
+76226, Bartonville
+76226, Lantana
+76227, Aubrey
+76227, Crossroads
+76227, Krugerville
+76247, Justin
+76249, Krum
+76258, Pilot Point
+76259, Ponder
+76262, Roanoke
+76262, Trophy Club
+76262, Westlake
+76266, Sanger
+76001, Arlington
+76002, Arlington
+76003, Arlington
+76004, Arlington
+76005, Arlington
+76006, Arlington
+76007, Arlington
+76010, Arlington
+76011, Arlington
+76012, Arlington
+76013, Arlington
+76013, Pantego
+76014, Arlington
+76015, Arlington
+76015, Pantego
+76016, Arlington
+76017, Arlington
+76018, Arlington
+76020, Azle
+76021, Bedford
+76022, Bedford
+76034, Colleyville
+76036, Crowley
+76039, Euless
+76040, Euless
+76051, Grapevine
+76052, Haslet
+76053, Hurst
+76054, Hurst
+76060, Kennedale
+76063, Mansfield
+76092, Grapevine
+76092, Southlake
+76094, Arlington
+76095, Bedford
+76096, Arlington
+76099, Grapevine
+76101, Fort Worth
+76102, Fort Worth
+76103, Fort Worth
+76104, Fort Worth
+76105, Fort Worth
+76106, Fort Worth
+76107, Fort Worth
+76108, Fort Worth
+76108, Lakeside
+76108, White Settlement
+76109, Benbrook
+76109, Fort Worth
+76110, Fort Worth
+76111, Fort Worth
+76111, Haltom City
+76112, Fort Worth
+76113, Fort Worth
+76114, Fort Worth
+76114, River Oaks
+76115, Fort Worth
+76116, Benbrook
+76116, Fort Worth
+76117, Fort Worth
+76117, Haltom City
+76118, Fort Worth
+76118, North Richland Hills
+76118, Richland Hills
+76119, Fort Worth
+76120, Fort Worth
+76121, Fort Worth
+76123, Fort Worth
+76124, Fort Worth
+76126, Benbrook
+76126, Fort Worth
+76127, Fort Worth
+76127, Naval Air Station/ Jrb
+76131, Blue Mound
+76131, Fort Worth
+76131, Saginaw
+76132, Benbrook
+76132, Fort Worth
+76133, Fort Worth
+76134, Fort Worth
+76135, Fort Worth
+76135, Lakeside
+76135, Lake Worth
+76136, Fort Worth
+76136, Lake Worth
+76137, Fort Worth
+76137, Haltom City
+76140, Everman
+76140, Fort Worth
+76147, Fort Worth
+76148, Fort Worth
+76148, Haltom City
+76148, Watauga
+76155, Fort Worth
+76161, Fort Worth
+76162, Fort Worth
+76163, Fort Worth
+76164, Fort Worth
+76177, Fort Worth
+76178, Fort Worth
+76179, Fort Worth
+76179, Saginaw
+76180, Fort Worth
+76180, Haltom City
+76180, North Richland Hills
+76180, Richland Hills
+76181, Fort Worth
+76182, Fort Worth
+76182, North Richland Hills
+76185, Fort Worth
+76244, Keller
+76248, Keller
