@@ -44,7 +44,7 @@ public class MinistryGenerator {
         for(int i=0; i<enrollment; i++) {
             int personId;
             do {
-                personId = rand.nextInt(peopleCount);
+                personId = rand.nextInt(peopleCount) + 1;
             } while(selectedPeople.contains(personId));
 
             selectedPeople.add(personId);

@@ -44,7 +44,7 @@ public class AbstractServiceClient {
 
     private void ensureLogin() {
         if(isEmpty(token)) {
-            WebTarget webTarget = client.target("http://localhost:8080/rest/login");
+            WebTarget webTarget = client.target("http://permission-svc:8080/rest/login");
 
             Map<String, String> credentials = new HashMap<>();
             credentials.put("email", "greg@servantscode.org");

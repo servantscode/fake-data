@@ -34,7 +34,6 @@
 75442, Farmersville
 75454, Melissa
 75485, Westminster
-Code, City
 75001, Addison
 75006, Carrollton
 75011, Carrollton

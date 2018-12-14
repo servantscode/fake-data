@@ -8,11 +8,25 @@ import java.sql.*;
 public class InitialLoginGenerator extends DBAccess {
     public static void generate() {
         try (Connection conn = getConnection();){
-            createFamily(conn);
-            createPerson(conn);
-            createLogin(conn);
+            if(!checkLogin(conn)) {
+                createFamily(conn);
+                createPerson(conn);
+                createLogin(conn);
+            } else {
+                System.out.println("Login exists. Skipping creation of initial login.");
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Could not create initial login", e);
+        }
+    }
+
+    private static boolean checkLogin(Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(1) FROM logins");
+        try (ResultSet rs = stmt.executeQuery()) {
+            if(rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
         }
     }
 

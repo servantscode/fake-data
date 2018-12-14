@@ -11,16 +11,18 @@ import java.util.Map;
 public class PersonServiceClient extends AbstractServiceClient {
 
     public PersonServiceClient() {
-        super("http://localhost/rest/person");
+        super("http://person-svc:8080/rest/person");
     }
 
-    public void createPerson(Map<String, Object> data) {
+    public Map<String, Object> createPerson(Map<String, Object> data) {
         Response response = post(data);
 
         if(response.getStatus() == 200)
             System.out.println("Created: " + data.get("name"));
         else
             System.err.println("Failed to create person. Status: " + response.getStatus());
+
+        return response.readEntity(new GenericType<Map<String, Object>>(){});
     }
 
     public int getPeopleCount() {

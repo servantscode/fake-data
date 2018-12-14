@@ -140,7 +140,9 @@ public class FamilyGenerator {
         data.put("memberSince", joined);
         data.put("family", familyData);
 
-        personClient.createPerson(data);
+        Map<String, Object> createdPersonData = personClient.createPerson(data);
+        Map<String, Object> createdFamilyData = (Map<String, Object>) createdPersonData.get("family");
+        familyData.put("id", createdFamilyData.get("id"));
     }
 
     private static Date randomDate(int age) {

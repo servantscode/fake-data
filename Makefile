@@ -34,7 +34,7 @@ build-nc: ## Build the container without caching
 	docker.exe build --no-cache -t servantscode/$(APP_NAME) .
 
 run: ## Run container on port configured in `config.env`
-	docker.exe run -dit --env-file=./config.env -p=$(PORT):$(PORT) --name="$(APP_NAME)" servantscode/$(APP_NAME)
+	docker.exe run -dit --env-file=./config.env --name="$(APP_NAME)" servantscode/$(APP_NAME)
 
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)

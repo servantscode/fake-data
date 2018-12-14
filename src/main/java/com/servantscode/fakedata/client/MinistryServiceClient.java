@@ -7,7 +7,7 @@ import java.util.Map;
 public class MinistryServiceClient extends AbstractServiceClient {
 
     public MinistryServiceClient() {
-        super("http://localhost:81/rest/ministry");
+        super("http://ministry-svc:8080/rest/ministry");
     }
 
     public Map<String, Object> createMinistry(Map<String, Object> data) {
