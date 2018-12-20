@@ -3,6 +3,7 @@ package com.servantscode.fakedata;
 import com.servantscode.fakedata.client.PersonServiceClient;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.servantscode.fakedata.RandomSelector.select;
@@ -126,8 +127,8 @@ public class FamilyGenerator {
         boolean head = !headFound;
         headFound = true;
 
-        Date birthdate = randomDate(age);
-        Date joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
+        LocalDate birthdate = randomDate(age);
+        LocalDate joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
 
         System.out.println(String.format("Name: %s email: %s phone:%s male?:%b headOfHousehold:%b birthdate:%tF joined:%tF", name, email, phone, male, head, birthdate, joined));
 
@@ -145,16 +146,7 @@ public class FamilyGenerator {
         familyData.put("id", createdFamilyData.get("id"));
     }
 
-    private static Date randomDate(int age) {
-        int randomMonth = rand.nextInt(12);
-        int randomDay = rand.nextInt(daysInMonth.get(randomMonth));
-
-        Date randomDate = new Date();
-
-        randomDate.setMonth(randomMonth);
-        randomDate.setDate(randomDay);
-        randomDate.setYear(randomDate.getYear()-age);
-
-        return randomDate;
+    private static LocalDate randomDate(int age) {
+        return LocalDate.now().minusYears(age).withDayOfYear(rand.nextInt(365));
     }
 }

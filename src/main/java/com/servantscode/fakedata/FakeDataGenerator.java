@@ -7,5 +7,6 @@ public class FakeDataGenerator {
         InitialLoginGenerator.generate();
         FamilyGenerator.generate(100);
         MinistryGenerator.generate(1000);
+        DonationGenerator.generate(40);
     }
 }
