@@ -49,7 +49,7 @@ public class MinistryGenerator {
 
             selectedPeople.add(personId);
 
-            String role = selectRoll(selectedPeople.size());
+            String role = selectRole(selectedPeople.size());
 
             Map<String, Object> enrollmentData = new HashMap<>();
             enrollmentData.put("personId", personId);
@@ -60,12 +60,12 @@ public class MinistryGenerator {
         }
     }
 
-    private static String selectRoll(int rollSelector) {
-        switch(rollSelector) {
+    private static String selectRole(int roleSelector) {
+        switch(roleSelector) {
             case 1:
                 return "president";
             case 2:
-                return "secratery";
+                return "secretary";
             default:
                 return "member";
         }
