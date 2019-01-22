@@ -1,9 +1,12 @@
 package com.servantscode.fakedata;
 
 import org.servantscode.commons.db.DBAccess;
-import java.util.Date;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.ZonedDateTime;
 
 public class InitialLoginGenerator extends DBAccess {
     public static void generate() {
@@ -48,7 +51,7 @@ public class InitialLoginGenerator extends DBAccess {
         stmt.setString(2, "greg@servantscode.org");
         stmt.setInt(3, 1);
         stmt.setBoolean(4, true);
-        stmt.setDate(5, convert(new Date()));
+        stmt.setTimestamp(5, convert(ZonedDateTime.now()));
         stmt.executeUpdate();
     }
 
