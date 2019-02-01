@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
+import static com.servantscode.fakedata.RandomSelector.rand;
 import static com.servantscode.fakedata.RandomSelector.select;
 import static com.servantscode.fakedata.RandomSelector.weightedSelect;
 
@@ -14,9 +15,6 @@ public class FamilyGenerator {
     private static Map<Integer, Integer> childDistribution;
     private static List<String> streetTypes;
     private static List<String> emailDomains;
-    private static List<Integer> daysInMonth;
-
-    private static Random rand = new Random();
 
     static {
         childDistribution = new HashMap<>(10);
@@ -33,8 +31,6 @@ public class FamilyGenerator {
 
         streetTypes = Arrays.asList("Ln", "St", "Ave", "Dr", "Blvd");
         emailDomains = Arrays.asList("yahoo.com", "gmail.com", "hotmail.com", "LAST_NAME", "me.com");
-
-        daysInMonth = Arrays.asList(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
     }
 
     private final PersonServiceClient personClient;

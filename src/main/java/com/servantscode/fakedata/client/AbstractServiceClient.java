@@ -5,7 +5,10 @@ import org.glassfish.jersey.client.ClientConfig;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.servantscode.commons.StringUtils.isEmpty;
@@ -23,21 +26,43 @@ public class AbstractServiceClient {
     }
 
     /*package*/ Response post(Map<String, Object> data) {
+        translateDates(data);
         return buildInvocation()
                 .post(Entity.entity(data, MediaType.APPLICATION_JSON));
     }
 
-    /*package*/ Response get() {
-        return buildInvocation().get();
+    /*package*/ Response get(Map<String, Object>... params) {
+        return buildInvocation(params).get();
     }
 
-
     // ----- Private -----
+    private void translateDates(Map<String, Object> data) {
+        data.entrySet().forEach( (entry) -> {
+            Object obj = entry.getValue();
+            if(obj instanceof ZonedDateTime) {
+                entry.setValue(((ZonedDateTime)obj).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            } else if(obj instanceof List) {
+                List list = (List)obj;
+                if(!list.isEmpty() && list.get(0) instanceof Map)
+                    list.forEach((item) -> translateDates((Map<String, Object>)item));
+            } else if(obj instanceof Map) {
+                translateDates((Map<String, Object>)obj);
+            }
+        });
+    }
 
-    private Invocation.Builder buildInvocation() {
+    private Invocation.Builder buildInvocation(Map<String, Object>... optionalParams) {
         ensureLogin();
 
-        return webTarget
+        WebTarget target = webTarget;
+
+        if(optionalParams.length > 0) {
+            Map<String, Object> params = optionalParams[0];
+            for(Map.Entry<String, Object> entry: params.entrySet())
+                target = target.property(entry.getKey(), entry.getValue());
+        }
+
+        return target
                 .request(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token);
     }

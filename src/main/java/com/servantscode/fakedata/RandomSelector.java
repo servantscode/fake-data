@@ -1,6 +1,9 @@
 package com.servantscode.fakedata;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class RandomSelector {
@@ -28,7 +31,7 @@ public class RandomSelector {
         return options.get(rand.nextInt(optionCount));
     }
 
-    public static <T> List<T> select(List<T> options, int count) {
+    public static <T> List<T> select(Collection<T> options, int count) {
         List<T> results = new ArrayList<>(count);
         List<T> samples = new LinkedList<>(options);
         for(int i=0;i<count;i++) {
@@ -64,6 +67,27 @@ public class RandomSelector {
         }
 
         return results;
+    }
+
+    public static int nextInt(int low, int high) {
+        return rand.nextInt(high-low) + low;
+    }
+
+    public static DayOfWeek randomDay() {
+        return DayOfWeek.of(rand.nextInt(7)+1);
+    }
+
+    public static ZonedDateTime randomTime() {
+        return randomTime(randomDate());
+    }
+
+    public static ZonedDateTime randomTime(LocalDate date) {
+        return date.atStartOfDay(ZoneId.systemDefault()).withHour(nextInt(7, 21));
+    }
+
+    public static ZonedDateTime randomTime(ZonedDateTime date) {
+        ZoneId zone = date.getZone();
+        return date.toLocalDate().atStartOfDay(zone).withHour(nextInt(7, 21));
     }
 
     public static LocalDate randomDate() {
