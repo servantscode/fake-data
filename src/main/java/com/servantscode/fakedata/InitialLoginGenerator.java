@@ -12,6 +12,8 @@ public class InitialLoginGenerator extends DBAccess {
     public static void generate() {
         try (Connection conn = getConnection();){
             if(!checkLogin(conn)) {
+                createRole(conn);
+                createPermission(conn);
                 createFamily(conn);
                 createPerson(conn);
                 createLogin(conn);
@@ -21,6 +23,21 @@ public class InitialLoginGenerator extends DBAccess {
         } catch (SQLException e) {
             throw new RuntimeException("Could not create initial login", e);
         }
+    }
+
+    private static void createRole(Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO roles(name) values (?)");
+        stmt.setString(1, "system");
+        stmt.executeUpdate();
+    }
+
+    private static void createPermission(Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO permissions(role_id, permission) values (?, ?)");
+        stmt.setInt(1, 1);
+        stmt.setString(2, "*");
+        stmt.executeUpdate();
     }
 
     private static boolean checkLogin(Connection conn) throws SQLException {
