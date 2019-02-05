@@ -69,6 +69,17 @@ public class RandomSelector {
         return results;
     }
 
+    public static String randomString(int length) {
+        char[] result = new char[length];
+        int i = 0;
+        while(i < length) {
+            int nextChar = rand.nextInt(127);
+            if(nextChar > 31)
+                result[i++] = (char)nextChar;
+        }
+        return new String(result);
+    }
+
     public static int nextInt(int low, int high) {
         return rand.nextInt(high-low) + low;
     }
