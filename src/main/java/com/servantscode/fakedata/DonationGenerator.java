@@ -79,7 +79,6 @@ public class DonationGenerator {
         pledge.put("pledgeStart", convert(LocalDate.now().withDayOfYear(1).atStartOfDay()));
         pledge.put("pledgeEnd", convert(LocalDate.now().withDayOfYear(1).plusYears(1).atStartOfDay()));
         pledge.put("annualPledgeAmount", amount*getPayments(pledgeFreq));
-        pledge.put("envelopeNumber", (pledgeType.equals("BASKET"))? rand.nextInt(10000): 0);
 
         if(rand.nextInt(100) < 80) {// 20% of the time don't pledge, just give
             pledge = pledgeClient.createDonation(pledge);

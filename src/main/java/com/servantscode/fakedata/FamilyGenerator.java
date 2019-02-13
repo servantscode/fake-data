@@ -67,7 +67,8 @@ public class FamilyGenerator {
 
         familyData.put("surname", surname);
         familyData.put("address", addressData);
-
+        if(rand.nextBoolean())
+            familyData.put("envelopeNumber", rand.nextInt(10000));
 
         System.out.println(String.format("\nFamily: %s Address: %s, %s, %s %s", surname, street1, city, state, zip));
 
