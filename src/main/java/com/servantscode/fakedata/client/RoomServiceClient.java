@@ -10,9 +10,8 @@ public class RoomServiceClient extends AbstractServiceClient {
     private Map<String, Integer> roomIdCache = new HashMap<>(16);
     private boolean roomsLoaded = false;
 
-    public RoomServiceClient() {
-        super("http://schedule-svc:84/rest/room");
-    }
+//    public RoomServiceClient() { super("http://schedule-svc:8080/rest/room"); }
+    public RoomServiceClient() { super("http://localhost/rest/room"); }
 
     public Map<String, Object> createRoom(Map<String, Object> data) {
         Response response = post(data);

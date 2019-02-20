@@ -12,9 +12,8 @@ public class EquipmentServiceClient extends AbstractServiceClient {
     private Map<String, Integer> equipmentIdCache = new HashMap<>(16);
     private boolean equipmentLoaded = false;
 
-    public EquipmentServiceClient() {
-        super("http://schedule-svc:84/rest/equipment");
-    }
+//    public EquipmentServiceClient() { super("http://schedule-svc:8080/rest/equipment"); }
+    public EquipmentServiceClient() { super("http://localhost/rest/equipment"); }
 
     public Map<String, Object> createEquipment(Map<String, Object> data) {
         Response response = post(data);

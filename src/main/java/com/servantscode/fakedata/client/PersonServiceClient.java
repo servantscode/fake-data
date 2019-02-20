@@ -10,9 +10,8 @@ import java.util.Map;
 
 public class PersonServiceClient extends AbstractServiceClient {
 
-    public PersonServiceClient() {
-        super("http://person-svc:8080/rest/person");
-    }
+//    public PersonServiceClient() { super("http://person-svc:8080/rest/person"); }
+    public PersonServiceClient() { super("http://localhost/rest/person"); }
 
     public Map<String, Object> createPerson(Map<String, Object> data) {
         Response response = post(data);

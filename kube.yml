@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fake-data
+spec:
+  containers:
+  - name: fake-data
+    image: servantscode/fake-data
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        memory: "200Mi"
+    env:
+    - name: ES_JAVA_OPTS 
+      value: "-Xmx128m -Xms128m"

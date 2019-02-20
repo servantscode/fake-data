@@ -3,12 +3,13 @@ package com.servantscode.fakedata;
 import com.servantscode.fakedata.client.PersonServiceClient;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.*;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.servantscode.fakedata.RandomSelector.rand;
-import static com.servantscode.fakedata.RandomSelector.select;
-import static com.servantscode.fakedata.RandomSelector.weightedSelect;
+import static com.servantscode.fakedata.RandomSelector.*;
 
 public class FamilyGenerator {
 
@@ -58,6 +59,7 @@ public class FamilyGenerator {
         String zip = select(zipCodes.keySet());
         String city = zipCodes.get(zip);
         String state = "TX";
+        String homePhone = randomPhoneNumber();
 
         Map<String, Object> addressData = new HashMap<>();
         addressData.put("street1", street1);
@@ -67,6 +69,7 @@ public class FamilyGenerator {
 
         familyData.put("surname", surname);
         familyData.put("address", addressData);
+        familyData.put("homePhone", homePhone);
         if(rand.nextBoolean())
             familyData.put("envelopeNumber", rand.nextInt(10000));
 
@@ -119,13 +122,13 @@ public class FamilyGenerator {
         String domain = select(emailDomains);
         String email = firstName + "@" + (domain.equals("LAST_NAME")? surname + ".com": domain);
 
-        String phone = String.format("(%03d) %03d-%04d", rand.nextInt(1000), rand.nextInt(1000), rand.nextInt(10000));
+        String phone = randomPhoneNumber();
 
         boolean head = !headFound;
         headFound = true;
 
-        LocalDate birthdate = randomDate(age);
-        LocalDate joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
+        ZonedDateTime birthdate = randomDate(age);
+        ZonedDateTime joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
 
         System.out.println(String.format("Name: %s email: %s phone:%s male?:%b headOfHousehold:%b birthdate:%tF joined:%tF", name, email, phone, male, head, birthdate, joined));
 
@@ -143,7 +146,7 @@ public class FamilyGenerator {
         familyData.put("id", createdFamilyData.get("id"));
     }
 
-    private static LocalDate randomDate(int age) {
-        return LocalDate.now().minusYears(age).withDayOfYear(rand.nextInt(365));
+    private static ZonedDateTime randomDate(int age) {
+        return ZonedDateTime.now().minusYears(age).withDayOfYear(rand.nextInt(365)+1);
     }
 }

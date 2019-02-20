@@ -74,12 +74,12 @@ public class InitialLoginGenerator extends DBAccess {
 
     private static void createLogin(Connection conn) throws SQLException {
         PreparedStatement stmt =
-                conn.prepareStatement("INSERT INTO logins(person_id, hashed_password, role) VALUES (?, ?, ?)");
+                conn.prepareStatement("INSERT INTO logins(person_id, hashed_password, role_id) VALUES (?, ?, ?)");
 
         stmt.setInt(1, 1);
         // Z@!!enHasTh1s
         stmt.setString(2, "$2a$10$ymleJy8knsspIL2c3dNnIu4c2onSsJxzOU0pBVzHs/GlSwXdFzuwO");
-        stmt.setString(3, "system");
+        stmt.setInt(3, 1);
         stmt.executeUpdate();
     }
 }

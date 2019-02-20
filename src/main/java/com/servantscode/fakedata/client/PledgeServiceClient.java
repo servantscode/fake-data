@@ -7,9 +7,8 @@ import java.util.Map;
 
 public class PledgeServiceClient extends AbstractServiceClient {
 
-    public PledgeServiceClient() {
-        super("http://donation-svc:83/rest/pledge");
-    }
+//    public PledgeServiceClient() { super("http://donation-svc:8080/rest/pledge"); }
+    public PledgeServiceClient() { super("http://localhost/rest/pledge"); }
 
     public Map<String, Object> createDonation(Map<String, Object> data) {
         Response response = post(data);

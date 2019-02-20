@@ -69,6 +69,10 @@ public class RandomSelector {
         return results;
     }
 
+    public static String randomPhoneNumber() {
+        return String.format("(%03d) %03d-%04d", rand.nextInt(1000), rand.nextInt(1000), rand.nextInt(10000));
+    }
+
     public static String randomString(int length) {
         char[] result = new char[length];
         int i = 0;
@@ -87,21 +91,21 @@ public class RandomSelector {
     public static DayOfWeek randomDay() {
         return DayOfWeek.of(rand.nextInt(7)+1);
     }
-
-    public static ZonedDateTime randomTime() {
-        return randomTime(randomDate());
-    }
-
-    public static ZonedDateTime randomTime(LocalDate date) {
-        return date.atStartOfDay(ZoneId.systemDefault()).withHour(nextInt(7, 21));
-    }
+//
+//    public static ZonedDateTime randomTime() {
+//        return randomTime(randomDate());
+//    }
+//
+//    public static ZonedDateTime randomTime(LocalDate date) {
+//        return date.atStartOfDay(ZoneId.systemDefault()).withHour(nextInt(7, 21));
+//    }
 
     public static ZonedDateTime randomTime(ZonedDateTime date) {
         ZoneId zone = date.getZone();
         return date.toLocalDate().atStartOfDay(zone).withHour(nextInt(7, 21));
     }
 
-    public static LocalDate randomDate() {
-        return LocalDate.now().withDayOfYear(rand.nextInt(365));
-    }
+//    public static ZonedDateTime randomDate() {
+//        return ZonedDateTime.now().withDayOfYear(rand.nextInt(365));
+//    }
 }
