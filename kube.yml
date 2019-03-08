@@ -9,7 +9,7 @@ spec:
     imagePullPolicy: IfNotPresent
     resources:
       limits:
-        memory: "150Mi"
+        memory: "200Mi"
     env:
     - name: ES_JAVA_OPTS 
       value: "-Xmx128m -Xms128m"
