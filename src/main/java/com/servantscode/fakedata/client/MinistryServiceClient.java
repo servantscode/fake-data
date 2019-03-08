@@ -14,7 +14,7 @@ public class MinistryServiceClient extends AbstractServiceClient {
     private boolean ministriesLoaded = false;
 
     //public MinistryServiceClient() { super("http://ministry-svc:8080/rest/ministry"); }
-    public MinistryServiceClient() { super("http://localhost/rest/ministry"); }
+    public MinistryServiceClient() { super("/rest/ministry"); }
 
     public Map<String, Object> createMinistry(Map<String, Object> data) {
         Response response = post(data);

@@ -11,7 +11,7 @@ public class RoomServiceClient extends AbstractServiceClient {
     private boolean roomsLoaded = false;
 
 //    public RoomServiceClient() { super("http://schedule-svc:8080/rest/room"); }
-    public RoomServiceClient() { super("http://localhost/rest/room"); }
+    public RoomServiceClient() { super("/rest/room"); }
 
     public Map<String, Object> createRoom(Map<String, Object> data) {
         Response response = post(data);

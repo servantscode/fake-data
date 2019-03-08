@@ -8,7 +8,7 @@ import java.util.Map;
 public class FamilyServiceClient extends AbstractServiceClient {
 
     //public FamilyServiceClient() { super("http://person-svc:8080/rest/family"); }
-    public FamilyServiceClient() { super("http://localhost/rest/family"); }
+    public FamilyServiceClient() { super("/rest/family"); }
 
     public int getFamilyCount() {
         Response response = get();

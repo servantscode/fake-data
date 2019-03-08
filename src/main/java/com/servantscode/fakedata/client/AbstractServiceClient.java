@@ -20,9 +20,11 @@ public class AbstractServiceClient {
     final private Client client;
     final private WebTarget webTarget;
 
-    /*package*/ AbstractServiceClient(String targetUrl) {
+    private static String urlPrefix = "http://localhost";
+
+    /*package*/ AbstractServiceClient(String service) {
         client = ClientBuilder.newClient(new ClientConfig().register(this.getClass()));
-        webTarget = client.target(targetUrl);
+        webTarget = client.target(urlForService(service));
     }
 
     /*package*/ Response post(Map<String, Object> data) {
@@ -36,6 +38,14 @@ public class AbstractServiceClient {
     }
 
     // ----- Private -----
+    private static String urlForService(String resource) {
+        return urlPrefix + resource;
+    }
+
+    public static void setUrlPrefix(String prefix) {
+        urlPrefix = prefix;
+    }
+
     private void translateDates(Map<String, Object> data) {
         data.entrySet().forEach( (entry) -> {
             Object obj = entry.getValue();
@@ -70,7 +80,7 @@ public class AbstractServiceClient {
     private void ensureLogin() {
         if(isEmpty(token)) {
 //            WebTarget webTarget = client.target("http://permission-svc:8080/rest/login");
-            WebTarget webTarget = client.target("http://localhost/rest/login");
+            WebTarget webTarget = client.target(urlForService("/rest/login"));
 
             Map<String, String> credentials = new HashMap<>();
             credentials.put("email", "greg@servantscode.org");

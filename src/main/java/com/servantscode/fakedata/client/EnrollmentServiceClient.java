@@ -6,7 +6,7 @@ import java.util.Map;
 public class EnrollmentServiceClient extends AbstractServiceClient {
 
     //public EnrollmentServiceClient() { super("http://ministry-svc:8080/rest/enrollment"); }
-    public EnrollmentServiceClient() { super("http://localhost/rest/enrollment"); }
+    public EnrollmentServiceClient() { super("/rest/enrollment"); }
 
     public void createEnrollment(Map<String, Object> data) {
         Response response = post(data);

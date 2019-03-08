@@ -13,7 +13,7 @@ public class EquipmentServiceClient extends AbstractServiceClient {
     private boolean equipmentLoaded = false;
 
 //    public EquipmentServiceClient() { super("http://schedule-svc:8080/rest/equipment"); }
-    public EquipmentServiceClient() { super("http://localhost/rest/equipment"); }
+    public EquipmentServiceClient() { super("/rest/equipment"); }
 
     public Map<String, Object> createEquipment(Map<String, Object> data) {
         Response response = post(data);

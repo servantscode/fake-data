@@ -8,7 +8,7 @@ import java.util.Map;
 public class DonationServiceClient extends AbstractServiceClient {
 
     //public DonationServiceClient() { super("http://donation-svc:8080/rest/donation"); }
-    public DonationServiceClient() { super("http://localhost/rest/donation"); }
+    public DonationServiceClient() { super("/rest/donation"); }
 
     public Map<String, Object> createDonation(Map<String, Object> data) {
         Response response = post(data);

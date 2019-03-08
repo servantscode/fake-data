@@ -7,7 +7,7 @@ import java.util.Map;
 public class EventServiceClient extends AbstractServiceClient {
 
     //public EventServiceClient() { super("http://schedule-svc:8080/rest/event"); }
-    public EventServiceClient() { super("http://localhost/rest/event"); }
+    public EventServiceClient() { super("/rest/event"); }
 
     public Map<String, Object> createEvent(Map<String, Object> data) {
         Response response = post(data);
