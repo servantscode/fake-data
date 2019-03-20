@@ -39,8 +39,8 @@ public class EventGenerator {
     }
 
     public static void generate() {
-//        generateMasses();
-//        generateRE();
+        generateMasses();
+        generateRE();
         generateMinistryMeetings();
     }
 

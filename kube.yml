@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: fake-data
-    image: servantscode/fake-data
+    image: servantcode/fake-data
     imagePullPolicy: IfNotPresent
     resources:
       limits:

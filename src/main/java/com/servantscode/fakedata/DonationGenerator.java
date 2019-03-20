@@ -42,7 +42,7 @@ public class DonationGenerator {
         int[] donors = RandomSelector.randomNumbers(familyCount, numberOfDonors);
 
         for(int i=0; i<numberOfDonors; i++) {
-            new DonationGenerator().generateDonationPattern(donors[i]);
+            new DonationGenerator().generateDonationPattern(donors[i] + 1); // Never use 0
         }
     }
 
