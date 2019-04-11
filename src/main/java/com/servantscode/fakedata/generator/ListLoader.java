@@ -1,4 +1,4 @@
-package com.servantscode.fakedata;
+package com.servantscode.fakedata.generator;
 
 import java.io.BufferedReader;
 import java.io.IOException;

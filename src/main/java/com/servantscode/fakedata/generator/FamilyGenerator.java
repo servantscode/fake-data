@@ -1,4 +1,4 @@
-package com.servantscode.fakedata;
+package com.servantscode.fakedata.generator;
 
 import com.servantscode.fakedata.client.PersonServiceClient;
 
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.servantscode.fakedata.RandomSelector.*;
+import static com.servantscode.fakedata.generator.RandomSelector.*;
 
 public class FamilyGenerator {
 

@@ -1,4 +1,4 @@
-package com.servantscode.fakedata;
+package com.servantscode.fakedata.generator;
 
 import com.servantscode.fakedata.client.EnrollmentServiceClient;
 import com.servantscode.fakedata.client.MinistryServiceClient;

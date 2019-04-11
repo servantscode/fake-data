@@ -1,6 +1,6 @@
 package com.servantscode.fakedata;
 
-import com.servantscode.fakedata.client.AbstractServiceClient;
+import com.servantscode.fakedata.generator.*;
 
 import java.io.IOException;
 

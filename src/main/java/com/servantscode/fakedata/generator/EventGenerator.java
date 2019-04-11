@@ -1,4 +1,4 @@
-package com.servantscode.fakedata;
+package com.servantscode.fakedata.generator;
 
 import com.servantscode.fakedata.client.EquipmentServiceClient;
 import com.servantscode.fakedata.client.EventServiceClient;
@@ -7,13 +7,12 @@ import com.servantscode.fakedata.client.RoomServiceClient;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.servantscode.fakedata.RandomSelector.*;
+import static com.servantscode.fakedata.generator.RandomSelector.*;
 import static java.time.DayOfWeek.*;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Arrays.asList;
