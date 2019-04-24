@@ -134,6 +134,7 @@ public class FamilyGenerator {
 
         Map<String, Object> data = new HashMap<>();
         data.put("name", name);
+        data.put("male", male);
         data.put("email", email);
         data.put("phoneNumber", phone);
         data.put("headOfHousehold", head);
