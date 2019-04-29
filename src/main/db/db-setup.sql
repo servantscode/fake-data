@@ -17,8 +17,6 @@ GRANT ALL ON DATABASE servantscode TO servant1;
 -- Then create initial login
 INSERT INTO families(surname, addr_street1, addr_city, addr_state, addr_zip) values ('Leitheiser', '849 Dalmalley Ln', 'Coppell', 'TX', 75019);
 INSERT INTO people(name, email, family_id, head_of_house, member_since) values ('Greg Leitheiser', 'greg@servantscode.org', 1, true, now());
-INSERT INTO roles(name) values ('system');
-INSERT INTO permissions(role_id, permission) values (1, '*');
 INSERT INTO logins(person_id, hashed_password, role_id) VALUES (1, '$2a$10$ymleJy8knsspIL2c3dNnIu4c2onSsJxzOU0pBVzHs/GlSwXdFzuwO', 1);
 
 
