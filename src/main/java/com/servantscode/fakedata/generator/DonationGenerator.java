@@ -2,6 +2,7 @@ package com.servantscode.fakedata.generator;
 
 import com.servantscode.fakedata.client.DonationServiceClient;
 import com.servantscode.fakedata.client.FamilyServiceClient;
+import com.servantscode.fakedata.client.FundServiceClient;
 import com.servantscode.fakedata.client.PledgeServiceClient;
 
 import java.io.IOException;
@@ -17,8 +18,9 @@ import static com.servantscode.fakedata.generator.RandomSelector.select;
 
 public class DonationGenerator {
 
-    private final DonationServiceClient donationClient;
-    private final PledgeServiceClient pledgeClient;
+    private static final DonationServiceClient donationClient = new DonationServiceClient();
+    private static final PledgeServiceClient pledgeClient = new PledgeServiceClient();
+    private static final FundServiceClient fundClient = new FundServiceClient();
 
     private static final List<String> PLEDGE_TYPES = Arrays.asList("EGIFT", "BASKET");
     private static final Map<String, List<String>> DONATION_TYPES;
@@ -33,21 +35,33 @@ public class DonationGenerator {
     private int missedDonations = 0;
 
     public DonationGenerator() {
-        donationClient = new DonationServiceClient();
-        pledgeClient = new PledgeServiceClient();
     }
 
     public static void generate(int numberOfDonors) throws IOException {
+        int generalFundId = 1; //In db setup
+        int buildingFundId = generateBulidingFund();
+
         int familyCount = new FamilyServiceClient().getFamilyCount();
         int[] donors = RandomSelector.randomNumbers(familyCount, numberOfDonors);
 
         for(int i=0; i<numberOfDonors; i++) {
-            new DonationGenerator().generateDonationPattern(donors[i] + 1); // Never use 0
+            int fundSelector = RandomSelector.rand.nextInt(100);
+            if(fundSelector < 90)
+                new DonationGenerator().generateDonationPattern(donors[i] + 1, generalFundId); // Never use 0
+            if(fundSelector > 70)
+                new DonationGenerator().generateDonationPattern(donors[i] + 1, buildingFundId); // Never use 0
         }
     }
 
-    private void generateDonationPattern(int familyId) {
-        Map<String, Object> pledge = generatePledge(familyId);
+    private static int generateBulidingFund() {
+        Map<String, Object> fundData = new HashMap<>(4);
+        fundData.put("name", "Building Fund");
+        Map<String, Object> fund = fundClient.createFund(fundData);
+        return (Integer)fund.get("id");
+    }
+
+    private void generateDonationPattern(int familyId, int fundId) {
+        Map<String, Object> pledge = generatePledge(familyId, fundId);
 
         String freq = (String) pledge.get("pledgeFrequency");
         int payments = Math.round(1f*ZonedDateTime.now().getDayOfYear()/365*getPayments(freq));
@@ -56,14 +70,14 @@ public class DonationGenerator {
             return;
 
         for(int i=0; i<payments; i++) {
-            generateDonation(pledge, i);
+            generateDonation(pledge, i, fundId);
 
             if(rand.nextInt(100) > 99) // 1% of donations are someone's last one
                 return;
         }
     }
 
-    private Map<String, Object> generatePledge(int familyId) {
+    private Map<String, Object> generatePledge(int familyId, int fundId) {
         ZonedDateTime now = ZonedDateTime.now();
 
         String pledgeType = select(PLEDGE_TYPES);
@@ -72,6 +86,7 @@ public class DonationGenerator {
 
         Map<String, Object> pledge = new HashMap<>();
         pledge.put("familyId", familyId);
+        pledge.put("fundId", fundId);
         pledge.put("pledgeType", pledgeType);
         pledge.put("pledgeFrequency", pledgeFreq);
         pledge.put("pledgeAmount", amount);
@@ -90,7 +105,7 @@ public class DonationGenerator {
         return pledge;
     }
 
-    private void generateDonation(Map<String, Object> pledge, int paymentNumber) {
+    private void generateDonation(Map<String, Object> pledge, int paymentNumber, int fundId) {
         if(rand.nextInt(100) > 95) {
             missedDonations++;
             return;
@@ -116,6 +131,7 @@ public class DonationGenerator {
 
         Map<String, Object> donation = new HashMap<>();
         donation.put("familyId", pledge.get("familyId"));
+        donation.put("fundId", fundId);
         donation.put("donationDate", donationDate);
         donation.put("amount", amount);
         donation.put("donationType", donationType);
