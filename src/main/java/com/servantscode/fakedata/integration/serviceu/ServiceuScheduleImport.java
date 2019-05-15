@@ -56,7 +56,7 @@ public class ServiceuScheduleImport {
 
                 //Horray for fixed field structures!
                 String date = parsedLine[0];
-                String name = parsedLine[1];
+                String title = parsedLine[1];
                 String description = parsedLine[2];
                 String eventTimes = parsedLine[3];
                 String resourceTimes = parsedLine[4];
@@ -90,7 +90,7 @@ public class ServiceuScheduleImport {
                 }
 
                 HashMap<String, Object> event = new HashMap<>(16);
-//                event.put("name", name);
+                event.put("title", title);
                 event.put("description", description);
                 event.put("startTime", eventDateTimes[0]);
                 event.put("endTime", eventDateTimes[1]);
@@ -98,8 +98,6 @@ public class ServiceuScheduleImport {
                 event.put("reservations", resources);
                 event.put("reservationTimes", resDateTimes);
                 events.add(event);
-
-                System.out.println(line);
 
                 lineNumber++;
             }
@@ -114,7 +112,7 @@ public class ServiceuScheduleImport {
                 System.err.println(String.format("Processed %d lines. %d failures", lineNumber, badLines.size()));
                 if(isSet(headers))
                     System.out.println(headers);
-                badLines.forEach(badLine -> System.err.println(badLine));
+                badLines.forEach(System.err::println);
             }
 
         } catch (Throwable e) {

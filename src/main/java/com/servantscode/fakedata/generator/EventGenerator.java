@@ -79,17 +79,17 @@ public class EventGenerator {
         generateREEvent("Youth Night", "St. Ann Youth", 5, rooms, asList(SUNDAY));
     }
 
-    private static void generateREEvent(String description, String ministry, int time, List<String> rooms, List<DayOfWeek> days) {
+    private static void generateREEvent(String title, String ministry, int time, List<String> rooms, List<DayOfWeek> days) {
         ZonedDateTime start = startOfYear().withHour(time);
         ZonedDateTime end = start.plusMinutes(90);
 
-        generateSchoolYearEvent(description, ministry, start, end, generateWeeklyRecurrance(days, endOfMay()),
+        generateSchoolYearEvent(title, ministry, start, end, generateWeeklyRecurrance(days, endOfMay()),
                                 generateRoomReservations(start, end, rooms));
     }
 
-    private static void generateSchoolYearEvent(String description, String ministry, ZonedDateTime start, ZonedDateTime end,
+    private static void generateSchoolYearEvent(String title, String ministry, ZonedDateTime start, ZonedDateTime end,
                                                      Map<String, Object> recurrence, List<Map<String, Object>> reservations) {
-        Map<String, Object> eventData = generateEvent(description, ministry, start, end, recurrence, reservations);
+        Map<String, Object> eventData = generateEvent(title, ministry, start, end, recurrence, reservations);
         eventClient.createEvent(eventData);
 
         ZonedDateTime newStart = start.withMonth(9).withDayOfMonth(7);
@@ -111,18 +111,18 @@ public class EventGenerator {
     }
 
 
-    private static void generateAllYearEvent(String description, String ministry, ZonedDateTime start, ZonedDateTime end,
+    private static void generateAllYearEvent(String title, String ministry, ZonedDateTime start, ZonedDateTime end,
                                              Map<String, Object> recurrence, List<Map<String, Object>> reservations) {
 
-        eventClient.createEvent(generateEvent(description, ministry, start, end, recurrence, reservations));
+        eventClient.createEvent(generateEvent(title, ministry, start, end, recurrence, reservations));
     }
 
-    private static Map<String, Object> generateEvent(String description, String ministry, ZonedDateTime start, ZonedDateTime end,
+    private static Map<String, Object> generateEvent(String title, String ministry, ZonedDateTime start, ZonedDateTime end,
                                                      Map<String, Object> recurrence, List<Map<String, Object>> reservations) {
         int ministryId = ministryClient.getMinistryId(ministry);
 
         Map<String, Object> eventData = new HashMap<>();
-        eventData.put("description", description);
+        eventData.put("title", title);
         eventData.put("startTime", start);
         eventData.put("endTime", end);
         eventData.put("schedulerId", 1);
@@ -163,7 +163,7 @@ public class EventGenerator {
         ZonedDateTime end = start.plusMinutes(length);
 
         Map<String, Object> massData = new HashMap<>();
-        massData.put("description", "Mass");
+        massData.put("title", "Mass");
         massData.put("startTime", start);
         massData.put("endTime", end);
         massData.put("schedulerId", 1);
