@@ -10,7 +10,6 @@ public class RoomServiceClient extends AbstractServiceClient {
     private Map<String, Integer> roomIdCache = new HashMap<>(16);
     private boolean roomsLoaded = false;
 
-//    public RoomServiceClient() { super("http://schedule-svc:8080/rest/room"); }
     public RoomServiceClient() { super("/rest/room"); }
 
     public Map<String, Object> createRoom(Map<String, Object> data) {
@@ -21,7 +20,9 @@ public class RoomServiceClient extends AbstractServiceClient {
         else
             System.err.println("Failed to create room. Status: " + response.getStatus());
 
-        return response.readEntity(new GenericType<Map<String, Object>>(){});
+        Map<String, Object> room = response.readEntity(new GenericType<Map<String, Object>>() {});
+        roomIdCache.put((String)room.get("name"), (Integer)room.get("id"));
+        return room;
     }
 
     public int getRoomId(String roomName) {
