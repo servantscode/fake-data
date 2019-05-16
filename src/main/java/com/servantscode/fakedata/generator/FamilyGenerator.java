@@ -3,7 +3,7 @@ package com.servantscode.fakedata.generator;
 import com.servantscode.fakedata.client.PersonServiceClient;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -127,8 +127,8 @@ public class FamilyGenerator {
         boolean head = !headFound;
         headFound = true;
 
-        ZonedDateTime birthdate = randomDate(age);
-        ZonedDateTime joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
+        LocalDate birthdate = randomDate(age);
+        LocalDate joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
 
         System.out.println(String.format("Name: %s email: %s phone:%s male?:%b headOfHousehold:%b birthdate:%tF joined:%tF", name, email, phone, male, head, birthdate, joined));
 
@@ -147,7 +147,7 @@ public class FamilyGenerator {
         familyData.put("id", createdFamilyData.get("id"));
     }
 
-    private static ZonedDateTime randomDate(int age) {
-        return ZonedDateTime.now().minusYears(age).withDayOfYear(rand.nextInt(365)+1);
+    private static LocalDate randomDate(int age) {
+        return LocalDate.now().minusYears(age).withDayOfYear(rand.nextInt(365)+1);
     }
 }

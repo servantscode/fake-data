@@ -91,21 +91,9 @@ public class RandomSelector {
     public static DayOfWeek randomDay() {
         return DayOfWeek.of(rand.nextInt(7)+1);
     }
-//
-//    public static ZonedDateTime randomTime() {
-//        return randomTime(randomDate());
-//    }
-//
-//    public static ZonedDateTime randomTime(LocalDate date) {
-//        return date.atStartOfDay(ZoneId.systemDefault()).withHour(nextInt(7, 21));
-//    }
 
     public static ZonedDateTime randomTime(ZonedDateTime date) {
         ZoneId zone = date.getZone();
         return date.toLocalDate().atStartOfDay(zone).withHour(nextInt(7, 21));
     }
-
-//    public static ZonedDateTime randomDate() {
-//        return ZonedDateTime.now().withDayOfYear(rand.nextInt(365));
-//    }
 }

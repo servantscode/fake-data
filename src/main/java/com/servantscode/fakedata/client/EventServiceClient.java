@@ -12,7 +12,7 @@ public class EventServiceClient extends AbstractServiceClient {
         Response response = post(data);
 
         if(response.getStatus() == 200)
-            System.out.println("Created: " + data.get("description"));
+            System.out.println("Created: " + data.get("title"));
         else
             System.err.println("Failed to create event. Status: " + response.getStatus());
 

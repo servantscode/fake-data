@@ -5,6 +5,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -50,7 +51,9 @@ public class AbstractServiceClient {
         data.entrySet().forEach( (entry) -> {
             Object obj = entry.getValue();
             if(obj instanceof ZonedDateTime) {
-                entry.setValue(((ZonedDateTime)obj).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                entry.setValue(((ZonedDateTime) obj).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            } else if(obj instanceof LocalDate) {
+                entry.setValue(((LocalDate)obj).format(DateTimeFormatter.ISO_DATE));
             } else if(obj instanceof List) {
                 List list = (List)obj;
                 if(!list.isEmpty() && list.get(0) instanceof Map)

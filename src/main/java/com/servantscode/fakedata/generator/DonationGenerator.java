@@ -6,7 +6,8 @@ import com.servantscode.fakedata.client.FundServiceClient;
 import com.servantscode.fakedata.client.PledgeServiceClient;
 
 import java.io.IOException;
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,7 +65,7 @@ public class DonationGenerator {
         Map<String, Object> pledge = generatePledge(familyId, fundId);
 
         String freq = (String) pledge.get("pledgeFrequency");
-        int payments = Math.round(1f*ZonedDateTime.now().getDayOfYear()/365*getPayments(freq));
+        int payments = Math.round(1f*LocalDate.now().getDayOfYear()/365*getPayments(freq));
 
         if(rand.nextInt(100) > 90) // 10% of pledges are ignored
             return;
@@ -78,7 +79,7 @@ public class DonationGenerator {
     }
 
     private Map<String, Object> generatePledge(int familyId, int fundId) {
-        ZonedDateTime now = ZonedDateTime.now();
+        LocalDate now = LocalDate.now();
 
         String pledgeType = select(PLEDGE_TYPES);
         String pledgeFreq = select(PLEDGE_FREQ);
@@ -91,8 +92,8 @@ public class DonationGenerator {
         pledge.put("pledgeFrequency", pledgeFreq);
         pledge.put("pledgeAmount", amount);
         pledge.put("pledgeDate", now.minusMonths(now.getMonthValue() + 1));
-        pledge.put("pledgeStart", ZonedDateTime.now().withDayOfYear(1).withHour(0).withMinute(0).withSecond(0));
-        pledge.put("pledgeEnd", ZonedDateTime.now().withDayOfYear(1).plusYears(1).withHour(0).withMinute(0).withSecond(0));
+        pledge.put("pledgeStart", LocalDate.now().withDayOfYear(1));
+        pledge.put("pledgeEnd", LocalDate.now().withDayOfYear(1).plusYears(1));
         pledge.put("annualPledgeAmount", amount*getPayments(pledgeFreq));
 
         if(rand.nextInt(100) < 80) {// 20% of the time don't pledge, just give
@@ -113,8 +114,8 @@ public class DonationGenerator {
 
         String freq = (String) pledge.get("pledgeFrequency");
         String pledgeType = (String) pledge.get("pledgeType");
-        ZonedDateTime donationDate = getDonationDate(freq, pledgeType, paymentNumber);
-        if(donationDate.isAfter(ZonedDateTime.now()))
+        LocalDate donationDate = getDonationDate(freq, pledgeType, paymentNumber);
+        if(donationDate.isAfter(LocalDate.now()))
             return;
 
         float pledgeAmount = (float)pledge.get("pledgeAmount");
@@ -143,12 +144,12 @@ public class DonationGenerator {
         donationClient.createDonation(donation);
     }
 
-    private ZonedDateTime getDonationDate(String freq, String pledgeType, int paymentNumber) {
+    private LocalDate getDonationDate(String freq, String pledgeType, int paymentNumber) {
         int totalPayments = getPayments(freq);
         float paymentSpan = 1f*365/totalPayments;
         int dayStart = Math.round(paymentNumber*paymentSpan)+7; //Make sure that we're into the time period in question
 
-        ZonedDateTime date = ZonedDateTime.now().withDayOfYear(dayStart).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        LocalDate date = LocalDate.now().withDayOfYear(dayStart).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
         if(pledgeType.equals("EGIFT"))
             date = date.plusDays(rand.nextInt(Math.round(paymentSpan))-7);
 
