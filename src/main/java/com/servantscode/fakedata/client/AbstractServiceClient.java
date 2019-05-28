@@ -81,23 +81,25 @@ public class AbstractServiceClient {
     }
 
     private void ensureLogin() {
-        if(isEmpty(token)) {
-//            WebTarget webTarget = client.target("http://permission-svc:8080/rest/login");
-            WebTarget webTarget = client.target(urlForService("/rest/login"));
+        if(isEmpty(token))
+            login("greg@servantscode.org","Z@!!enHasTh1s");
+    }
 
-            Map<String, String> credentials = new HashMap<>();
-            credentials.put("email", "greg@servantscode.org");
-            credentials.put("password", "Z@!!enHasTh1s");
+    public static void login(String email, String password) {
+        WebTarget webTarget = ClientBuilder.newClient(new ClientConfig().register(AbstractServiceClient.class))
+                .target(urlForService("/rest/login"));
 
-            Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-            Response response = invocationBuilder.post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
+        Map<String, String> credentials = new HashMap<>();
+        credentials.put("email", email);
+        credentials.put("password", password);
 
-            if (response.getStatus() != 200)
-                System.err.println("Failed to login. Status: " + response.getStatus());
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+        Response response = invocationBuilder.post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
 
-            token = response.readEntity(String.class);
+        if (response.getStatus() != 200)
+            System.err.println("Failed to login. Status: " + response.getStatus());
 
-            System.out.println("Logged in: " + token);
-        }
+        token = response.readEntity(String.class);
+        System.out.println("Logged in: " + token);
     }
 }

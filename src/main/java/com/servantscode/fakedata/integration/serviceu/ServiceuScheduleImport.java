@@ -2,6 +2,7 @@ package com.servantscode.fakedata.integration.serviceu;
 
 import com.servantscode.fakedata.client.EventServiceClient;
 import com.servantscode.fakedata.client.RoomServiceClient;
+import com.servantscode.fakedata.integration.CSVParser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,9 +20,11 @@ import static org.servantscode.commons.StringUtils.isSet;
 
 public class ServiceuScheduleImport {
     public static void main(String[] args) throws IOException {
-//        File importFile = new File("c:\\Users\\gleit\\stgabriel\\events-test.csv");
-        File importFile = new File("c:\\Users\\gleit\\stgabriel\\events-5-14.csv");
+        String filePath = null;
+        File importFile = new File(filePath);
 
+//        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
+//        AbstractServiceClient.login("user", "password");
         new ServiceuScheduleImport().processFile(importFile, true, 1);
     }
 
@@ -52,7 +55,7 @@ public class ServiceuScheduleImport {
             List<String> badLines = new LinkedList<>();
 
             while((line = fileLines.readLine()) != null) {
-                String[] parsedLine = parseCsvLine(line);
+                String[] parsedLine = CSVParser.parseCsvLine(line);
 
                 //Horray for fixed field structures!
                 String date = parsedLine[0];
@@ -162,42 +165,6 @@ public class ServiceuScheduleImport {
 
     private void createReservations(List<HashMap<String, Object>> events) {
         events.forEach(event -> eventClient.createEvent(event));
-    }
-
-    // ----- Parser bits -----
-    public String[] parseCsvLine(String line) {
-        boolean quote=false;
-
-        char[] chars = line.trim().toCharArray();
-        List<String> fields = new LinkedList<>();
-        int start = 0;
-        for(int i=0; i<chars.length; i++) {
-            switch (chars[i]) {
-                case ',':
-                    if(quote)
-                        break;
-
-                    String field = new String(chars, start, i-start).trim();
-                    fields.add(field);
-                    start=i+1;
-                    break;
-                case '\"':
-                    quote = !quote;
-                    break;
-            }
-        }
-        if(start < chars.length) {
-            if(quote)
-                throw new RuntimeException("Could not parse csv line.");
-
-            String field = new String(chars, start, chars.length-start).trim();
-            fields.add(field);
-        } else {
-            //Empty last field
-            fields.add("");
-        }
-
-        return fields.toArray(new String[fields.size()]);
     }
 
     private ZonedDateTime[] parseTimes(String eventTimes, LocalDate currentDate) {
