@@ -1,8 +1,11 @@
 package com.servantscode.fakedata.integration.serviceu;
 
+import com.servantscode.fakedata.client.AbstractServiceClient;
 import com.servantscode.fakedata.client.EventServiceClient;
+import com.servantscode.fakedata.client.PersonServiceClient;
 import com.servantscode.fakedata.client.RoomServiceClient;
 import com.servantscode.fakedata.integration.CSVParser;
+import com.servantscode.fakedata.integration.recurrence.RecurrenceProcessor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,10 +14,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static org.servantscode.commons.StringUtils.isEmpty;
 import static org.servantscode.commons.StringUtils.isSet;
 
@@ -25,18 +28,20 @@ public class ServiceuScheduleImport {
 
 //        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
 //        AbstractServiceClient.login("user", "password");
-        new ServiceuScheduleImport().processFile(importFile, true, 1);
+        new ServiceuScheduleImport().processFile(importFile, true);
     }
 
     private RoomServiceClient roomClient;
     private EventServiceClient eventClient;
+    private PersonServiceClient personClient;
 
     public ServiceuScheduleImport() {
         roomClient = new RoomServiceClient();
         eventClient = new EventServiceClient();
+        personClient = new PersonServiceClient();
     }
 
-    private void processFile(File importFile, boolean hasHeaders, int schedulerId) {
+    private void processFile(File importFile, boolean hasHeaders) {
         int lineNumber = 0;
         String line = null;
         try {
@@ -61,26 +66,31 @@ public class ServiceuScheduleImport {
                 String date = parsedLine[0];
                 String title = parsedLine[1];
                 String description = parsedLine[2];
-                String eventTimes = parsedLine[3];
-                String resourceTimes = parsedLine[4];
-                String resourceString = parsedLine[5];
+//                String confirmationNumber = parsedLine[3];
+                String eventTimes = parsedLine[4];
+                String resourceTimes = parsedLine[5];
+                String resourceString = parsedLine[6];
+//                String location = parsedLine[7];
+//                String approvalStatus = parsedLine[8];
+//                String visibility = parsedLine[9];
+//                String department = parsedLine[10];
+//                String category = parsedLine[11];
+                String submittedBy = parsedLine[12];
 
                 if(isSet(date)) {
-                    currentDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("\"EEEE, LLLL d, yyyy\""));
+                    currentDate = LocalDate.parse(date, ofPattern("\"EEEE, LLLL d, yyyy\""));
                     System.out.println("Current Date is now: " + currentDate);
                 }
 
                 if(isEmpty(eventTimes)) {
-                    badLines.add(line);
-                    continue;
+                    eventTimes = "12:00AM - 11:59PM";
                 }
 
                 ZonedDateTime[] eventDateTimes = parseTimes(eventTimes, currentDate);
                 System.out.println(String.format("Event runs from: %s to %s", eventDateTimes[0].format(ISO_OFFSET_DATE_TIME), eventDateTimes[1].format(ISO_OFFSET_DATE_TIME)));
 
-                if(isEmpty(resourceTimes) && isSet(resourceString)) {
-                    badLines.add(line);
-                    continue;
+                if(isEmpty(resourceTimes)) {
+                    resourceTimes = "12:00AM - 11:59PM";
                 }
 
                 ZonedDateTime[] resDateTimes = parseTimes(resourceTimes, currentDate);
@@ -91,6 +101,10 @@ public class ServiceuScheduleImport {
                     System.out.println("  Reserving: [" + res + "]");
                     rooms.add(res);
                 }
+
+                int schedulerId = personClient.getPersonId(submittedBy);
+                if(schedulerId == 0)
+                    schedulerId = 3;
 
                 HashMap<String, Object> event = new HashMap<>(16);
                 event.put("title", title);
@@ -106,8 +120,9 @@ public class ServiceuScheduleImport {
             }
 
             createRooms(rooms);
-            populateReservations(events, schedulerId);
-            createReservations(events);
+            populateReservations(events);
+            events = new RecurrenceProcessor().identifyRecurrences(events);
+            createEvents(events);
 
             if(badLines.isEmpty())
                 System.out.println(String.format("Processed %d lines. 0 failures", lineNumber));
@@ -141,7 +156,7 @@ public class ServiceuScheduleImport {
         }
     }
 
-    private void populateReservations(List<HashMap<String, Object>> events, int schedulerId) {
+    private void populateReservations(List<HashMap<String, Object>> events) {
         for(HashMap<String, Object> event: events) {
             ZonedDateTime[] times = (ZonedDateTime[]) event.remove("reservationTimes");
             String[] resources = (String[]) event.remove("reservations");
@@ -150,10 +165,8 @@ public class ServiceuScheduleImport {
             for(String resource: resources) {
                 HashMap<String, Object> res = new HashMap<>(8);
                 res.put("resourceType", "ROOM");
-                int roomId = roomClient.getRoomId(resource);
-                System.out.println(String.format("Found room id %d for room %s", roomId, resource));
-                res.put("resourceId", roomId);
-                res.put("reservingPersonId", schedulerId);
+                res.put("resourceId", roomClient.getRoomId(resource));
+                res.put("reservingPersonId", event.get("schedulerId"));
                 res.put("startTime", times[0]);
                 res.put("endTime", times[1]);
                 reservations.add(res);
@@ -163,7 +176,7 @@ public class ServiceuScheduleImport {
         }
     }
 
-    private void createReservations(List<HashMap<String, Object>> events) {
+    private void createEvents(List<HashMap<String, Object>> events) {
         events.forEach(event -> eventClient.createEvent(event));
     }
 

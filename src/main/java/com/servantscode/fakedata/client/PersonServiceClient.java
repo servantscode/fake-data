@@ -1,17 +1,17 @@
 package com.servantscode.fakedata.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class PersonServiceClient extends AbstractServiceClient {
 
-//    public PersonServiceClient() { super("http://person-svc:8080/rest/person"); }
     public PersonServiceClient() { super("/rest/person"); }
+
+    private Map<String, Integer> idCache = new HashMap<>(16);
 
     public Map<String, Object> createPerson(Map<String, Object> data) {
         Response response = post(data);
@@ -34,5 +34,26 @@ public class PersonServiceClient extends AbstractServiceClient {
             System.err.println("Failed to count people. Status: " + response.getStatus());
 
         return (Integer) searchResponse.get("totalResults");
+    }
+
+    public int getPersonId(String name) {
+        if(idCache.get(name) != null)
+            return idCache.get(name);
+
+        Map<String, Object> params = new HashMap<>(8);
+        params.put("count", 1);
+        params.put("partial_name", name);
+
+        Response response = get(params);
+        Map<String, Object> resp = response.readEntity(new GenericType<Map<String, Object>>(){});
+
+        List<Map<String, Object>> results = (List<Map<String, Object>>) resp.get("results");
+        if(results.size() == 0)
+            return 0;
+
+        int id = (int)results.get(0).get("id");
+
+        idCache.put(name, id);
+        return id;
     }
 }

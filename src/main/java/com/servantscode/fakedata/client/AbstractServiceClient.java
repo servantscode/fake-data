@@ -1,5 +1,7 @@
 package com.servantscode.fakedata.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
 
 import javax.ws.rs.client.*;
@@ -11,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.servantscode.commons.StringUtils.isEmpty;
 
@@ -29,9 +32,18 @@ public class AbstractServiceClient {
     }
 
     /*package*/ Response post(Map<String, Object> data) {
-        translateDates(data);
-        return buildInvocation()
-                .post(Entity.entity(data, MediaType.APPLICATION_JSON));
+        try {
+            translateDates(data);
+            return buildInvocation()
+                    .post(Entity.entity(data, MediaType.APPLICATION_JSON));
+        } catch (Throwable e) {
+            try {
+                System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
+            } catch (JsonProcessingException e1) {
+                System.err.println("Won't happen");
+            }
+            throw new RuntimeException("Call failed: ", e);
+        }
     }
 
     /*package*/ Response get(Map<String, Object>... params) {
@@ -58,6 +70,10 @@ public class AbstractServiceClient {
                 List list = (List)obj;
                 if(!list.isEmpty() && list.get(0) instanceof Map)
                     list.forEach((item) -> translateDates((Map<String, Object>)item));
+                if(!list.isEmpty() && list.get(0) instanceof LocalDate)
+                    entry.setValue(list.stream()
+                            .map((item) -> ((LocalDate)item).format(DateTimeFormatter.ISO_DATE)).collect(Collectors.toList())
+                    );
             } else if(obj instanceof Map) {
                 translateDates((Map<String, Object>)obj);
             }
@@ -72,7 +88,7 @@ public class AbstractServiceClient {
         if(optionalParams.length > 0) {
             Map<String, Object> params = optionalParams[0];
             for(Map.Entry<String, Object> entry: params.entrySet())
-                target = target.property(entry.getKey(), entry.getValue());
+                target = target.queryParam(entry.getKey(), entry.getValue());
         }
 
         return target
