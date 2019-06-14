@@ -99,7 +99,7 @@ public class EventGenerator {
         eventData.put("startTime", newStart);
         eventData.put("endTime", newEnd);
 
-        recurrence.put("endDate", endOfYear());
+        recurrence.put("endDate", endOfYear().toLocalDate());
         eventData.put("recurrence", recurrence);
 
         reservations.forEach((res) -> {
@@ -223,7 +223,7 @@ public class EventGenerator {
         Map<String, Object> recurranceData = new HashMap<>();
         recurranceData.put("cycle", cycle);
         recurranceData.put("frequency", freq);
-        recurranceData.put("endDate", end);
+        recurranceData.put("endDate", end.toLocalDate());
         recurranceData.put("weeklyDays", days);
 
         return recurranceData;
