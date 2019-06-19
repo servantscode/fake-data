@@ -19,6 +19,9 @@ INSERT INTO families(surname, addr_street1, addr_city, addr_state, addr_zip) val
 INSERT INTO people(name, email, family_id, head_of_house, member_since) values ('Greg Leitheiser', 'greg@servantscode.org', 1, true, now());
 INSERT INTO logins(person_id, hashed_password, role_id) VALUES (1, '$2a$10$ymleJy8knsspIL2c3dNnIu4c2onSsJxzOU0pBVzHs/GlSwXdFzuwO', 1);
 
+INSERT INTO families(surname, addr_street1, addr_city, addr_state, addr_zip) values ('Jakubik', '8013 Lynores Way', 'Plano', 'TX', 75025);
+INSERT INTO people(name, email, family_id, head_of_house, member_since) values ('Collin Jakubik', 'collin.jakubik@gmail.com', 1, true, now());
+INSERT INTO logins(person_id, hashed_password, role_id) VALUES (1, '$2a$10$cNnyHlMCMiDQENuchb9Z1eMfm9GFUB5X6wX71mhFB7U9SRRJtbPbC', 1);
 
 INSERT INTO families(surname, addr_street1, addr_city, addr_state, addr_zip) values ('Lukeman', '101 Somewhere', 'Coppell', 'TX', 75019);
 INSERT INTO people(name, email, family_id, head_of_house, member_since) values ('Dave Lukeman', 'dave@servantscode.org', 2, true, now());
