@@ -15,9 +15,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static org.servantscode.commons.StringUtils.isEmpty;
 import static org.servantscode.commons.StringUtils.isSet;
 
@@ -59,6 +62,8 @@ public class ServiceuScheduleImport {
 
             List<String> badLines = new LinkedList<>();
 
+            Set<String> departments = new HashSet<>();
+            Set<String> categories = new HashSet<>();
             while((line = fileLines.readLine()) != null) {
                 String[] parsedLine = CSVParser.parseCsvLine(line);
 
@@ -73,9 +78,14 @@ public class ServiceuScheduleImport {
 //                String location = parsedLine[7];
 //                String approvalStatus = parsedLine[8];
 //                String visibility = parsedLine[9];
-//                String department = parsedLine[10];
-//                String category = parsedLine[11];
+                String department = parsedLine[10];
+                String category = parsedLine[11];
                 String submittedBy = parsedLine[12];
+
+                if(isSet(department.trim()))
+                    departments.addAll(stream(department.split("\\|")).map(String::trim).collect(Collectors.toList()));
+                if(isSet(category.trim()))
+                    categories.addAll(stream(category.split("\\|")).map(String::trim).collect(Collectors.toList()));
 
                 if(isSet(date)) {
                     currentDate = LocalDate.parse(date, ofPattern("\"EEEE, LLLL d, yyyy\""));
@@ -94,11 +104,11 @@ public class ServiceuScheduleImport {
                 }
 
                 ZonedDateTime[] resDateTimes = parseTimes(resourceTimes, currentDate);
-                System.out.println(String.format("Reservations runs from: %s to %s", resDateTimes[0].format(ISO_OFFSET_DATE_TIME), resDateTimes[1].format(ISO_OFFSET_DATE_TIME)));
+//                System.out.println(String.format("Reservations runs from: %s to %s", resDateTimes[0].format(ISO_OFFSET_DATE_TIME), resDateTimes[1].format(ISO_OFFSET_DATE_TIME)));
 
                 String[] resources = parseResources(resourceString);
                 for(String res: resources) {
-                    System.out.println("  Reserving: [" + res + "]");
+//                    System.out.println("  Reserving: [" + res + "]");
                     rooms.add(res);
                 }
 
@@ -119,10 +129,14 @@ public class ServiceuScheduleImport {
                 lineNumber++;
             }
 
-            createRooms(rooms);
-            populateReservations(events);
-            events = new RecurrenceProcessor().identifyRecurrences(events);
-            createEvents(events);
+            System.out.println("Departments: \"" + String.join("\", \"", departments));
+            System.out.println("Categories: \"" + String.join("\", \"", categories));
+
+
+//            createRooms(rooms);
+//            populateReservations(events);
+//            events = new RecurrenceProcessor().identifyRecurrences(events);
+//            createEvents(events);
 
             if(badLines.isEmpty())
                 System.out.println(String.format("Processed %d lines. 0 failures", lineNumber));
