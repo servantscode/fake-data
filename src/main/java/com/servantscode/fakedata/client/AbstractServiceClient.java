@@ -93,6 +93,7 @@ public class AbstractServiceClient {
 
         return target
                 .request(MediaType.APPLICATION_JSON)
+                .header("referer", "http://localhost")
                 .header("Authorization", "Bearer " + token);
     }
 
@@ -110,7 +111,7 @@ public class AbstractServiceClient {
         credentials.put("password", password);
 
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-        Response response = invocationBuilder.post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
+        Response response = invocationBuilder.header("referer", "http://localhost").post(Entity.entity(credentials, MediaType.APPLICATION_JSON));
 
         if (response.getStatus() != 200)
             System.err.println("Failed to login. Status: " + response.getStatus());

@@ -15,6 +15,8 @@ GRANT ALL ON DATABASE servantscode TO servant1;
 -- Then go run the database script in person-svc
 
 -- Then create initial login
+INSERT INTO organizations (name, host_name) VALUES ('Servant''s Code Development', 'localhost');
+
 INSERT INTO families(surname, addr_street1, addr_city, addr_state, addr_zip) values ('Leitheiser', '849 Dalmalley Ln', 'Coppell', 'TX', 75019);
 INSERT INTO people(name, email, family_id, head_of_house, member_since) values ('Greg Leitheiser', 'greg@servantscode.org', 1, true, now());
 INSERT INTO logins(person_id, hashed_password, role_id) VALUES (1, '$2a$10$ymleJy8knsspIL2c3dNnIu4c2onSsJxzOU0pBVzHs/GlSwXdFzuwO', 1);
