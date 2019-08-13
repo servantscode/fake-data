@@ -34,7 +34,7 @@ public class MinistryServiceClient extends AbstractServiceClient {
 
         Map<String, Object> params = new HashMap<>(8);
         params.put("count", 1);
-        params.put("partial_name", ministryName);
+        params.put("search", ministryName);
 
         Response response = get(params);
         Map<String, Object> resp = response.readEntity(new GenericType<Map<String, Object>>(){});
