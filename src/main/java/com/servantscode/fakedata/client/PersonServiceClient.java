@@ -21,7 +21,9 @@ public class PersonServiceClient extends AbstractServiceClient {
         else
             System.err.println("Failed to create person. Status: " + response.getStatus());
 
-        return response.readEntity(new GenericType<Map<String, Object>>(){});
+        Map<String, Object> resp = response.readEntity(new GenericType<Map<String, Object>>(){});
+        idCache.put((String)resp.get("name"), (Integer)resp.get("id"));
+        return resp;
     }
 
     public int getPeopleCount() {

@@ -31,11 +31,56 @@ public class AbstractServiceClient {
         webTarget = client.target(urlForService(service));
     }
 
-    /*package*/ Response post(Map<String, Object> data) {
+    /*package*/ Response post(Map<String, Object> data, Map<String, Object>... params) {
         try {
             translateDates(data);
-            return buildInvocation()
+            return buildInvocation(params)
                     .post(Entity.entity(data, MediaType.APPLICATION_JSON));
+        } catch (Throwable e) {
+            try {
+                System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
+            } catch (JsonProcessingException e1) {
+                System.err.println("Won't happen");
+            }
+            throw new RuntimeException("Call failed: ", e);
+        }
+    }
+
+    /*package*/ Response post(List<Map<String, Object>> data, Map<String, Object>... params) {
+        try {
+            data.forEach(this::translateDates);
+            return buildInvocation(params)
+                    .post(Entity.entity(data, MediaType.APPLICATION_JSON));
+        } catch (Throwable e) {
+            try {
+                System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
+            } catch (JsonProcessingException e1) {
+                System.err.println("Won't happen");
+            }
+            throw new RuntimeException("Call failed: ", e);
+        }
+    }
+
+    /*package*/ Response put(Map<String, Object> data, Map<String, Object>... params) {
+        try {
+            translateDates(data);
+            return buildInvocation(params)
+                    .put(Entity.entity(data, MediaType.APPLICATION_JSON));
+        } catch (Throwable e) {
+            try {
+                System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
+            } catch (JsonProcessingException e1) {
+                System.err.println("Won't happen");
+            }
+            throw new RuntimeException("Call failed: ", e);
+        }
+    }
+
+    /*package*/ Response put(List<Map<String, Object>> data, Map<String, Object>... params) {
+        try {
+            data.forEach(this::translateDates);
+            return buildInvocation(params)
+                    .put(Entity.entity(data, MediaType.APPLICATION_JSON));
         } catch (Throwable e) {
             try {
                 System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
@@ -48,6 +93,10 @@ public class AbstractServiceClient {
 
     /*package*/ Response get(Map<String, Object>... params) {
         return buildInvocation(params).get();
+    }
+
+    /*package*/ Response get(String path, Map<String, Object>... params) {
+        return buildInvocation(path, params).get();
     }
 
     // ----- Private -----
@@ -80,10 +129,16 @@ public class AbstractServiceClient {
         });
     }
 
-    private Invocation.Builder buildInvocation(Map<String, Object>... optionalParams) {
-        ensureLogin();
+    private Invocation.Builder buildInvocation(String path, Map<String, Object>... optionalParams) {
+        return buildInvocation(webTarget.path(path), optionalParams);
+    }
 
-        WebTarget target = webTarget;
+    private Invocation.Builder buildInvocation(Map<String, Object>... optionalParams) {
+        return buildInvocation(webTarget, optionalParams);
+    }
+
+    private Invocation.Builder buildInvocation(WebTarget target, Map<String, Object>... optionalParams) {
+        ensureLogin();
 
         if(optionalParams.length > 0) {
             Map<String, Object> params = optionalParams[0];

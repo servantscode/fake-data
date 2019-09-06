@@ -10,15 +10,26 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.servantscode.commons.StringUtils.isEmpty;
+import static org.servantscode.commons.StringUtils.isSet;
 
 public class CSVParser {
     public CSVParser() {}
 
-    public CSVData readFile(File importFile) {
+    public CSVData readFiles(List<File> importFiles) {
+        CSVData data = new CSVData();
+        importFiles.forEach(f -> doRead(data, f));
+        return data;
+    }
 
+    public CSVData readFile(File importFile) {
+        CSVData data = new CSVData();
+        doRead(data, importFile);
+        return data;
+    }
+
+    private void doRead(CSVData data, File importFile) {
         int lineNumber = 1;
         try {
-            CSVData data = new CSVData();
             BufferedReader fileLines = new BufferedReader(new FileReader(importFile));
             List<String> badLines = new LinkedList<>();
 
@@ -45,8 +56,6 @@ public class CSVParser {
                 System.out.println(headers);
                 badLines.forEach(System.err::println);
             }
-
-            return data;
         } catch (Throwable e) {
             throw new RuntimeException(String.format("Processing %s failed on line: %d", importFile.getPath(), lineNumber), e);
         }
@@ -56,9 +65,18 @@ public class CSVParser {
         System.out.println("Found header line: " + headers);
 
         String[] columns = parseCsvLine(headers);
-        for(String column: columns) {
-            data.fields.add(column);
-            data.fieldCounts.put(column, new AtomicInteger());
+        if(!data.fields.isEmpty()) {
+            Iterator<String> fieldNames = data.fields.iterator();
+            for (String column : columns) {
+                if(!stripQuotes(column).equals(fieldNames.next()))
+                    throw new IllegalArgumentException("Input files do not have same headers");
+            }
+        } else {
+            for (String column : columns) {
+                String columnName = stripQuotes(column);
+                data.fields.add(columnName);
+                data.fieldCounts.put(columnName, new AtomicInteger());
+            }
         }
     }
 
@@ -72,7 +90,7 @@ public class CSVParser {
             String field = fieldNames.next();
             String fieldData = stripQuotes(column);
 
-            if(!isEmpty(fieldData)) {
+            if(isSet(fieldData)) {
                 entry.put(field, fieldData);
                 data.fieldCounts.get(field).incrementAndGet();
             }
