@@ -366,8 +366,10 @@ public class PDSImport {
                 continue;
 
             String personName = (String) members.get(0).get("name");
-            if(members.size() > 2)
-                throw new IllegalArgumentException("Spouse found in family with " + members.size() + " members! " + personName);
+            if(members.size() > 2) {
+                System.err.println("Spouse found in family with " + members.size() + " members! " + personName);
+                continue;
+            }
 
             HashMap<String, Object> relationship = new HashMap<>(8);
             relationship.put("personId", members.get(0).get("id"));
