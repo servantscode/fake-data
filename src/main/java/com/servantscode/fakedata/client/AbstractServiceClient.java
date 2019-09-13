@@ -99,6 +99,10 @@ public class AbstractServiceClient {
         return buildInvocation(path, params).get();
     }
 
+    /*package*/ Response delete(int id, Map<String, Object>... params) {
+        return buildInvocation("/" + id, params).delete();
+    }
+
     // ----- Private -----
     private static String urlForService(String resource) {
         return urlPrefix + resource;

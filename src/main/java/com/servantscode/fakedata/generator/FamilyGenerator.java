@@ -4,10 +4,7 @@ import com.servantscode.fakedata.client.PersonServiceClient;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.servantscode.fakedata.generator.RandomSelector.*;
 
@@ -122,25 +119,24 @@ public class FamilyGenerator {
         String domain = select(emailDomains);
         String email = firstName + "@" + (domain.equals("LAST_NAME")? surname + ".com": domain);
 
-        String phone = randomPhoneNumber();
-
         boolean head = !headFound;
         headFound = true;
 
         LocalDate birthdate = randomDate(age);
         LocalDate joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
 
-        System.out.println(String.format("Name: %s email: %s phone:%s male?:%b headOfHousehold:%b birthdate:%tF joined:%tF", name, email, phone, male, head, birthdate, joined));
+        System.out.println(String.format("Name: %s email: %s male?:%b headOfHousehold:%b birthdate:%tF joined:%tF", name, email, male, head, birthdate, joined));
 
         Map<String, Object> data = new HashMap<>();
         data.put("name", name);
         data.put("male", male);
         data.put("email", email);
-        data.put("phoneNumber", phone);
         data.put("headOfHousehold", head);
+        data.put("phoneNumbers", randomPhoneNumbers());
         data.put("birthdate", birthdate);
         data.put("memberSince", joined);
         data.put("family", familyData);
+
 
         Map<String, Object> createdPersonData = personClient.createPerson(data);
         Map<String, Object> createdFamilyData = (Map<String, Object>) createdPersonData.get("family");

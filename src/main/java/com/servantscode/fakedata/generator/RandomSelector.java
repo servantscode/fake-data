@@ -69,6 +69,20 @@ public class RandomSelector {
         return results;
     }
 
+    private static final List<String> phoneTypes = Arrays.asList("CELL", "WORK", "OTHER");
+    public static List<Map<String, Object>> randomPhoneNumbers() {
+        int count = nextInt(1, 3);
+        List<Map<String, Object>> phoneNumbers = new ArrayList<>(count);
+        for(int i=0; i < count; i++) {
+            HashMap<String, Object> phoneNumber = new HashMap<>(8);
+            phoneNumber.put("phoneNumber", randomPhoneNumber());
+            phoneNumber.put("type", select(phoneTypes));
+            phoneNumber.put("primary", rand.nextBoolean());
+            phoneNumbers.add(phoneNumber);
+        }
+        return phoneNumbers;
+    }
+
     public static String randomPhoneNumber() {
         return String.format("(%03d) %03d-%04d", rand.nextInt(1000), rand.nextInt(1000), rand.nextInt(10000));
     }

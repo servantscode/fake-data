@@ -5,11 +5,11 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class FamilyServiceClient extends AbstractServiceClient {
 
-    //public FamilyServiceClient() { super("http://person-svc:8080/rest/family"); }
     public FamilyServiceClient() { super("/rest/family"); }
 
     private Map<String, Integer> idCache = new HashMap<>(16);
@@ -66,8 +66,8 @@ public class FamilyServiceClient extends AbstractServiceClient {
         return response.readEntity(new GenericType<Map<String, Object>>(){});
     }
 
-    public int getFamilyId(String name) {
-        if(idCache.get(name) != null)
+    public int getFamilyId(String name, int envelopeNumber) {
+        if(idCache.get(name) != null && envelopeNumber == 0 )
             return idCache.get(name);
 
         Map<String, Object> params = new HashMap<>(8);
@@ -78,6 +78,9 @@ public class FamilyServiceClient extends AbstractServiceClient {
         Map<String, Object> resp = response.readEntity(new GenericType<Map<String, Object>>(){});
 
         List<Map<String, Object>> results = (List<Map<String, Object>>) resp.get("results");
+        if(envelopeNumber > 0)
+            results = results.stream().filter(r -> r.get("envelopeNumber").equals(envelopeNumber)).collect(Collectors.toList());
+
         if(results.size() == 0)
             return 0;
 
@@ -89,5 +92,19 @@ public class FamilyServiceClient extends AbstractServiceClient {
 
         idCache.put(name, id);
         return id;
+    }
+
+    private static final Map<String, Object> DELETE_PARAMS = new HashMap<>(2);
+    static {
+        DELETE_PARAMS.put("delete_permenantly", true);
+    }
+
+    public void deleteFamilyId(int id) {
+        Response response = delete(id, DELETE_PARAMS);
+
+        if(response.getStatus() != 204) {
+            System.err.println("Failed to delete family. Status: " + response.getStatus());
+            throw new RuntimeException("Could not delete family.");
+        }
     }
 }

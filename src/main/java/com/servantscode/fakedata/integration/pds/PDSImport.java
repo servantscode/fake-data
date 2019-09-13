@@ -8,7 +8,6 @@ import com.servantscode.fakedata.integration.CSVParser;
 import org.servantscode.commons.StringUtils;
 
 import java.io.File;
-import java.nio.channels.IllegalChannelGroupException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,7 +31,7 @@ public class PDSImport {
         String familyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-active2.csv";
         String inactiveFamilyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-inactive.csv";
         String peopleFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\sc-export.csv";
-        String donationFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\donation-history.csv";
+        String donationFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\donation-history2.csv";
 
         File familyFile = new File(familyFilePath);
         File inactiveFamilyFile = new File(inactiveFamilyFilePath);
@@ -41,8 +40,8 @@ public class PDSImport {
 
         boolean dryRun = false;
 
-        AbstractServiceClient.setUrlPrefix("https://sttest.servantscode.org");
-        AbstractServiceClient.login("greg@servantscode.org", "Z@!!enHasTh1s");
+//        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
+//        AbstractServiceClient.login("user", "password");
         new PDSImport().processFiles(asList(familyFile, inactiveFamilyFile), asList(peopleFile), asList(donationFile), dryRun);
     }
 
@@ -116,18 +115,23 @@ public class PDSImport {
 
             String surname = row.get("Fam Last Name");
 
+            String numString = row.get("Fam ID/Env Number");
+            int envelopeNumber = isSet(numString)? Integer.parseInt(numString): 0;
+
             add(family, "surname", surname);
-            add(family, "envelopeNumber", row.get("Fam ID/Env Number"));
+            add(family, "envelopeNumber", envelopeNumber);
             add(family, "address", processAddress(getMultiValue(row, "Fam Address Block", "Fam Street Address Block")));
             add(family, "inactive", mapBoolean(row.get("Fam Inactive"), "YES"));
 
-            int id = familyClient.getFamilyId(surname);
+            int id = familyClient.getFamilyId(surname, envelopeNumber);
             if(id > 0)
                 add(family, "id", id);
 
             String familyUID = row.get("Fam Unique ID");
             knownFamilies.put(familyUID, family);
         }
+
+        System.out.println("Created " + knownFamilies.size() + " families.");
     }
 
 
@@ -313,12 +317,14 @@ public class PDSImport {
             HashMap<String, Object> person = new HashMap<>(32);
             String firstName = row.get("Fam Spouse First");
             String lastName = row.get("Fam Last Name");
+            add(person, "name", combineName(firstName, null, lastName));
 
             String familyUID = row.get("Fam Unique ID");
             Map<String, Object> family = knownFamilies.get(familyUID);
+            if(family.containsKey("id"))
+                checkForExistingPerson(family, person);
 
-            add(person, "name", combineName(firstName, null, lastName));
-//            add(person, "family", family);
+
             add(person, "salutation", row.get("Fam Spouse Raw Title"));
             add(person, "suffix", row.get("Fam Spouse Suffix"));
             add(person, "nickname", row.get("Fam Spouse Nickname"));
