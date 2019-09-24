@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.time.ZonedDateTime;
 
 public class InitialLoginGenerator extends DBAccess {
-    public static void generate() {
+    public void generate() {
         try (Connection conn = getConnection();){
             if(!checkLogin(conn)) {
                 createRole(conn);

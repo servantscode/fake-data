@@ -77,7 +77,7 @@ public class RandomSelector {
             HashMap<String, Object> phoneNumber = new HashMap<>(8);
             phoneNumber.put("phoneNumber", randomPhoneNumber());
             phoneNumber.put("type", select(phoneTypes));
-            phoneNumber.put("primary", rand.nextBoolean());
+            phoneNumber.put("primary", i == 0);
             phoneNumbers.add(phoneNumber);
         }
         return phoneNumbers;
