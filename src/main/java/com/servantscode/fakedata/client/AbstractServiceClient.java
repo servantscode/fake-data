@@ -158,7 +158,7 @@ public class AbstractServiceClient {
 
     private void ensureLogin() {
         if(isEmpty(token))
-            login("greg@servantscode.org","Z@!!enHasTh1s");
+            login("greg@servantscode.org","1234");
     }
 
     public static void login(String email, String password) {
