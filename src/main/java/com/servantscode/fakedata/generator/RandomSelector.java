@@ -103,11 +103,15 @@ public class RandomSelector {
     }
 
     public static DayOfWeek randomDay() {
-        return DayOfWeek.of(rand.nextInt(7)+1);
+        return DayOfWeek.of(nextInt(1, 7));
     }
 
     public static ZonedDateTime randomTime(ZonedDateTime date) {
         ZoneId zone = date.getZone();
         return date.toLocalDate().atStartOfDay(zone).withHour(nextInt(7, 21));
+    }
+
+    public static boolean byPercentage(float v) {
+        return rand.nextFloat() < v;
     }
 }

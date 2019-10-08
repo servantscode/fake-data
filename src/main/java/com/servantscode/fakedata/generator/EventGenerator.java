@@ -72,11 +72,12 @@ public class EventGenerator {
 
     private static void generateRE() {
         List<String> rooms = roomClient.getClassRooms();
-        generateREEvent("RE classes", "Religious Education", 4, rooms, asList(TUESDAY, WEDNESDAY, THURSDAY));
+        generateREEvent("Religious Education", "Religious Education", 4, rooms, asList(TUESDAY));
         generateREEvent("Sunday School", "Religious Education", 8, rooms, asList(SUNDAY));
         generateREEvent("Sunday School", "Religious Education", 10, rooms, asList(SUNDAY));
         generateREEvent("Sunday School", "Religious Education", 12, rooms, asList(SUNDAY));
-        generateREEvent("Youth Night", "St. Ann Youth", 5, rooms, asList(SUNDAY));
+        generateREEvent("Youth Ministry", "Youth Ministry", 5, rooms, asList(SUNDAY));
+        generateREEvent("High School Ministry", "High School Ministry", 18, rooms, asList(WEDNESDAY));
     }
 
     private static void generateREEvent(String title, String ministry, int time, List<String> rooms, List<DayOfWeek> days) {

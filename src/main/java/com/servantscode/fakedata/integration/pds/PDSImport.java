@@ -387,7 +387,7 @@ public class PDSImport {
             if(dryRun) {
                 System.out.println("Creating relationship for: " + personName);
             } else {
-                relationshipClient.createRelationship(Collections.singletonList(relationship), true);
+                relationshipClient.createRelationships(Collections.singletonList(relationship), true);
             }
         }
     }

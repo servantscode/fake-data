@@ -48,6 +48,11 @@ public class RoomServiceClient extends AbstractServiceClient {
         return results.stream().filter((result) -> result.get("type").equals("CLASS")).map((result) -> (String)result.get("name")).collect(Collectors.toList());
     }
 
+    public List<Integer> getClassRoomIds() {
+        List<Map<String, Object>> results = loadAllRooms();
+        return results.stream().filter((result) -> result.get("type").equals("CLASS")).map((result) -> (int)result.get("id")).collect(Collectors.toList());
+    }
+
     public Set<String> getRooms() {
         if(!roomsLoaded)
             loadAllRooms();

@@ -32,10 +32,18 @@ public class AbstractServiceClient {
     }
 
     /*package*/ Response post(Map<String, Object> data, Map<String, Object>... params) {
+        return post(null, data, params);
+    }
+
+    /*package*/ Response post(String path, Map<String, Object> data, Map<String, Object>... params) {
         try {
             translateDates(data);
-            return buildInvocation(params)
-                    .post(Entity.entity(data, MediaType.APPLICATION_JSON));
+            if(isEmpty(path))
+                return buildInvocation(params)
+                        .post(Entity.entity(data, MediaType.APPLICATION_JSON));
+            else
+                return buildInvocation(path, params)
+                        .post(Entity.entity(data, MediaType.APPLICATION_JSON));
         } catch (Throwable e) {
             try {
                 System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
@@ -62,10 +70,18 @@ public class AbstractServiceClient {
     }
 
     /*package*/ Response put(Map<String, Object> data, Map<String, Object>... params) {
+        return put(null, data, params);
+    }
+
+    /*package*/ Response put(String path, Map<String, Object> data, Map<String, Object>... params) {
         try {
             translateDates(data);
-            return buildInvocation(params)
-                    .put(Entity.entity(data, MediaType.APPLICATION_JSON));
+            if(isEmpty(path))
+                return buildInvocation(params)
+                        .put(Entity.entity(data, MediaType.APPLICATION_JSON));
+            else
+                return buildInvocation(path, params)
+                        .put(Entity.entity(data, MediaType.APPLICATION_JSON));
         } catch (Throwable e) {
             try {
                 System.err.println("Call failed: " + new ObjectMapper().writeValueAsString(data));
