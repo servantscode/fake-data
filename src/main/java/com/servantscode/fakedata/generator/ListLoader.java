@@ -9,24 +9,28 @@ import java.util.*;
 public class ListLoader {
     private static Map<String, Object> cachedData = new HashMap<>(10);
 
-    public static List<String> loadList(String resourceName) throws IOException {
-        if(cachedData.containsKey(resourceName))
-            return (List<String>) cachedData.get(resourceName);
+    public static List<String> loadList(String resourceName) {
+        try {
+            if (cachedData.containsKey(resourceName))
+                return (List<String>) cachedData.get(resourceName);
 
-        InputStream input = ListLoader.class.getClassLoader().getResourceAsStream(resourceName);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            InputStream input = ListLoader.class.getClassLoader().getResourceAsStream(resourceName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-        List<String> items = new LinkedList<String>();
-        String item = null;
-        while((item = reader.readLine()) != null) {
-            items.add(item.trim());
+            List<String> items = new LinkedList<String>();
+            String item = null;
+            while ((item = reader.readLine()) != null) {
+                items.add(item.trim());
+            }
+
+            //Faster access.
+            List<String> data = new ArrayList(items);
+            cachedData.put(resourceName, data);
+
+            return data;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read list: " + resourceName, e);
         }
-
-        //Faster access.
-        List<String> data = new ArrayList(items);
-        cachedData.put(resourceName, data);
-
-        return data;
     }
 
     public static Map<String, String> loadMap(String resourceName) throws IOException {

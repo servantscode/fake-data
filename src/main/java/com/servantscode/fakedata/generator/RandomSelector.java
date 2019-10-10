@@ -7,7 +7,27 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 public class RandomSelector {
+    public static RandomSelector selector;
+
     public static Random rand = new Random();
+    public Map<String, String> zipCodes;
+    public List<String> streetNames;
+
+    private RandomSelector() {
+        try {
+            zipCodes = ListLoader.loadMap("zip-codes.txt");
+            streetNames = ListLoader.loadList("street-names.txt");
+        } catch (Exception e) {
+            throw new RuntimeException("Could not read data files");
+        }
+    }
+
+    public static RandomSelector randomSelector() {
+        if(selector == null)
+            selector = new RandomSelector();
+
+        return selector;
+    }
 
     public static <T> T weightedSelect(Map<T, Integer> options) {
         int totalWeight = 0;
@@ -40,7 +60,7 @@ public class RandomSelector {
         return results;
     }
 
-    public static <T> T select(Set<T> options) {
+    public static <T> T select(Collection<T> options) {
         int optionCount = options.size();
         int selector = rand.nextInt(optionCount);
         for (T item : options) {
@@ -113,5 +133,9 @@ public class RandomSelector {
 
     public static boolean byPercentage(float v) {
         return rand.nextFloat() < v;
+    }
+
+    public String randomLocation() {
+        return select(zipCodes.values());
     }
 }

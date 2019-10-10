@@ -63,19 +63,18 @@ public class FamilyGenerator {
     private int youngestParent = Integer.MAX_VALUE;
     private Map<String, Object> familyData = new HashMap<>();
 
+    private LocalDate familyJoinedDate = null;
+
     private int fatherId = 0;
     private int motherId = 0;
     private List<Integer> childIds = new LinkedList<>();
 
     private void generateFamily() throws IOException {
-        List<String> streetNames = ListLoader.loadList("street-names.txt");
-        Map<String, String> zipCodes = ListLoader.loadMap("zip-codes.txt");
-
         surname = getLastName();
 
-        String street1 = String.format("%d %s %s", rand.nextInt(12000), select(streetNames), select(streetTypes));
-        String zip = select(zipCodes.keySet());
-        String city = zipCodes.get(zip);
+        String street1 = String.format("%d %s %s", rand.nextInt(12000), select(randomSelector().streetNames), select(streetTypes));
+        String zip = select(randomSelector().zipCodes.keySet());
+        String city = randomSelector().zipCodes.get(zip);
         String state = "TX";
         String homePhone = randomPhoneNumber();
 
@@ -105,8 +104,7 @@ public class FamilyGenerator {
         generateRelationships();
     }
 
-
-    private String getLastName() throws IOException {
+    private String getLastName() {
         List<String> lastNames = ListLoader.loadList("family-names.txt");
         return select(lastNames);
     }
@@ -141,14 +139,14 @@ public class FamilyGenerator {
         motherId = generatePerson(surname, false, age, "Mrs.", true);
     }
 
-    private void generateChild(String surname) throws IOException {
+    private void generateChild(String surname) {
         int age = RandomSelector.nextInt(Math.max(youngestParent-40, 0), youngestParent-15);
         boolean male = rand.nextBoolean();
         String salutation = male? "Mr.": "Ms.";
         childIds.add(generatePerson(surname, male, age, salutation, false));
     }
 
-    private int generatePerson(String surname, boolean male, int age, String salutation, boolean parent) throws IOException {
+    private int generatePerson(String surname, boolean male, int age, String salutation, boolean parent) {
         String gender = male? "male": "female";
         List<String> names = ListLoader.loadList(gender + "-names.txt");
 
@@ -162,7 +160,9 @@ public class FamilyGenerator {
         headFound = true;
 
         LocalDate birthdate = randomDate(age);
-        LocalDate joined = (age == 0)? birthdate: randomDate(rand.nextInt(age));
+        if(familyJoinedDate == null)
+            familyJoinedDate = randomDate(rand.nextInt(age));
+        LocalDate joined = birthdate.isAfter(familyJoinedDate)? birthdate: familyJoinedDate;
 
         System.out.println(String.format("Name: %s email: %s male?:%b headOfHousehold:%b birthdate:%tF joined:%tF", name, email, male, head, birthdate, joined));
 

@@ -24,4 +24,13 @@ public class RelationshipServiceClient extends AbstractServiceClient {
         else
             System.err.println("Failed to create relationship. Status: " + response.getStatus());
     }
+
+    public List<Map<String, Object>> getRelationships(int id) {
+        Response response = get("/" + id);
+
+        if(response.getStatus() != 200)
+            System.err.println("Could not find relationships for: " + id);
+
+        return response.readEntity(new GenericType<List<Map<String, Object>>>(){});
+    }
 }

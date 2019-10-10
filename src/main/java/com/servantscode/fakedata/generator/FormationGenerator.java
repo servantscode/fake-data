@@ -18,6 +18,7 @@ public class FormationGenerator {
     private final PersonServiceClient personClient;
     private final RoomServiceClient roomClient;
     private final EventServiceClient eventClient;
+    private final PersonSelector personSelector;
 
     public FormationGenerator() {
         programGroupClient = new ProgramGroupServiceClient();
@@ -25,6 +26,7 @@ public class FormationGenerator {
         personClient = new PersonServiceClient();
         roomClient = new RoomServiceClient();
         eventClient = new EventServiceClient();
+        personSelector = new PersonSelector();
     }
 
     Map<String, Object> lastSchoolYear;
@@ -53,16 +55,16 @@ public class FormationGenerator {
 
 // Programs
     private void generatePrograms(Map<String, Object> group) {
-        Map<String, Object> re = createProgram("Religious Education", (int)group.get("id"), asList("Kindergarten", "1st", "2nd", "3rd", "4th", "5th"));
-        Map<String, Object> youth = createProgram("Youth Ministry", (int)group.get("id"), asList("6th", "7th", "8th"));
-        Map<String, Object> highSchool = createProgram("High School Ministry", (int)group.get("id"), asList("9th", "10th", "11th", "12th"));
+        createProgram("Religious Education", (int)group.get("id"), asList("Kindergarten", "1st", "2nd", "3rd", "4th", "5th"));
+        createProgram("Youth Ministry", (int)group.get("id"), asList("6th", "7th", "8th"));
+        createProgram("High School Ministry", (int)group.get("id"), asList("9th", "10th", "11th", "12th"));
     }
 
     private Map<String, Object> createProgram(String name, int groupId, List<String> classes) {
         Map<String, Object> program = new HashMap<>(4);
         program.put("name", name);
         program.put("groupId", groupId);
-        program.put("coordinatorId", randomAdult().get("id"));
+        program.put("coordinatorId", personSelector.randomAdult().get("id"));
 
         program = programClient.createProgram(program);
         List<Map<String, Object>> sections = generateSections(program, classes);
@@ -83,7 +85,7 @@ public class FormationGenerator {
             Map<String, Object> section = new HashMap<>();
             section.put("name", name);
             section.put("programId", program.get("id"));
-            section.put("instructorId", randomAdult().get("id"));
+            section.put("instructorId", personSelector.randomAdult().get("id"));
             section.put("roomId", classRoomIds.get(roomIter++));
 
             sections.add(sectionClient.createSection(section));
@@ -164,15 +166,6 @@ public class FormationGenerator {
 
 
     // Utilities
-    private static String adultQuery = "birthdate:[1954-01-01 TO 1994-01-01]"; //25-65
-    int adultCount = 0;
-    private Map<String, Object> randomAdult() {
-        if(adultCount == 0)
-            adultCount = personClient.getPeopleCount(adultQuery);
-
-        return personClient.getPerson(RandomSelector.nextInt(0, adultCount), adultQuery);
-    }
-
     private List<Integer> classRoomIds = null;
     private List<Integer> randomClassRooms(int size) {
         if(classRoomIds == null)

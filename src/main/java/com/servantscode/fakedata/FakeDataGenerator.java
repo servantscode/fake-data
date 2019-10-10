@@ -16,6 +16,8 @@ public class FakeDataGenerator {
 //        RoomGenerator.generate();
 //        EquipmentGenerator.generate();
 //        EventGenerator.generate();
-        FormationGenerator.generate();
+//        FormationGenerator.generate();
+        new SacramentGenerator().generate();
     }
 }
+
