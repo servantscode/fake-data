@@ -28,21 +28,22 @@ public class PDSImport {
 
     public static void main(String[] args) throws Exception {
 
-        String familyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-active2.csv";
-        String inactiveFamilyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-inactive.csv";
-        String peopleFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\sc-export.csv";
-        String donationFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\donation-history2.csv";
+        String familyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\st francis\\st-francis-families.csv";
+//        String inactiveFamilyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-inactive.csv";
+        String peopleFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\st francis\\st-francis-members.csv";
+        String donationFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\st francis\\st-francis-donations.csv";
 
         File familyFile = new File(familyFilePath);
-        File inactiveFamilyFile = new File(inactiveFamilyFilePath);
+//        File inactiveFamilyFile = new File(inactiveFamilyFilePath);
         File peopleFile = new File(peopleFilePath);
         File donationFile = new File(donationFilePath);
 
         boolean dryRun = false;
 
-//        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
-//        AbstractServiceClient.login("user", "password");
-        new PDSImport().processFiles(asList(familyFile, inactiveFamilyFile), asList(peopleFile), asList(donationFile), dryRun);
+        AbstractServiceClient.setUrlPrefix("https://stfrancis.servantscode.org");
+        AbstractServiceClient.login("greg@servantscode.org", "S3rv@nt1HasTh1s");
+//        new PDSImport().processFiles(asList(familyFile, inactiveFamilyFile), asList(peopleFile), asList(donationFile), dryRun);
+        new PDSImport().processFiles(asList(familyFile), asList(peopleFile), asList(donationFile), dryRun);
     }
 
     HashMap<String, Map<String, Object>> knownFamilies = new HashMap<>(1024);
@@ -122,6 +123,7 @@ public class PDSImport {
             add(family, "envelopeNumber", envelopeNumber);
             add(family, "address", processAddress(getMultiValue(row, "Fam Address Block", "Fam Street Address Block")));
             add(family, "inactive", mapBoolean(row.get("Fam Inactive"), "YES"));
+            add(family, "inactiveSince", mapDate(row.get("Fam Inactive Date")));
 
             int id = familyClient.getFamilyId(surname, envelopeNumber);
             if(id > 0)
@@ -248,10 +250,16 @@ public class PDSImport {
             add(person, "email", row.get("Mem Email 1"));
             add(person, "headOfHousehold", mapBoolean(row.get("Mem Type"),"Head of Household"));
             add(person, "birthdate", mapDate(row.get("Mem Date of Birth")));
-            add(person, "memberSince", mapDate(row.get("Mem Date Created")));
 
-            add(person, "inactive", mapBoolean(row.get("Mem Inactive"), "YES"));
-            add(person, "parishioner", mapBoolean(row.get("Mem Is Church Member"), "YES"));
+            boolean inactive = mapBoolean(row.get("Mem Inactive"), "YES");
+            add(person, "inactive", inactive);
+            if(inactive)
+                add(person, "inactiveSince", mapDate(row.get("Mem Inactive Date")));
+
+            boolean parishioner = mapBoolean(row.get("Mem Is Church Member"), "YES");
+            add(person, "parishioner", parishioner);
+            if(parishioner)
+                add(person, "memberSince", mapDate(row.get("Mem Date Created")));
 
 //            add(person, "baptized", ??);
 //            add(person, "confession", ??);
@@ -336,10 +344,16 @@ public class PDSImport {
             add(person, "email", row.get("Fam Email List"));
             add(person, "headOfHousehold", true);
             add(person, "birthdate", mapDate(row.get("Fam Spouse Birth Date")));
-            add(person, "memberSince", LocalDate.now());
 
-            add(person, "inactive", mapBoolean(row.get("Fam Inactive"), "YES"));
-            add(person, "parishioner", mapBoolean(row.get("Fam Is Active Church"), "YES"));
+            boolean inactive = mapBoolean(row.get("Fam Inactive"), "YES");
+            add(person, "inactive", inactive);
+            if(inactive)
+                add(person, "inactiveSince", mapDate(row.get("Fam Inactive Date")));
+
+            boolean parishioner = mapBoolean(row.get("Fam Is Active Church"), "YES");
+            add(person, "parishioner", parishioner);
+            if(parishioner)
+                add(person, "memberSince", mapDate(row.get("Fam Date Created")));
 
 //            add(person, "baptized", ??);
 //            add(person, "confession", ??);
@@ -419,10 +433,22 @@ public class PDSImport {
         for(HashMap<String, String> row: donationData.rowData) {
             String familyUID = row.get("Fam Unique ID");
 
+            String fundName = row.get("Fund Hist Activity");
+            String amount = row.get("Fund Hist Amount");
+
+            if(isEmpty(fundName)) {
+                if (isEmpty(amount) || amount.equals("0.00")) {
+                    System.out.println("Found bad donation record... Skipping");
+                    continue;
+                } else {
+                    throw new RuntimeException(String.format("Found donation with value (%s) but no fund name.", amount));
+                }
+            }
+
             HashMap<String, Object> donation = new HashMap<>(32);
             add(donation, "familyId", knownFamilies.get(familyUID).get("id"));
-            add(donation, "fundId", knownFunds.get(row.get("Fund Hist Activity")));
-            add(donation, "amount", row.get("Fund Hist Amount"));
+            add(donation, "fundId", knownFunds.get(fundName));
+            add(donation, "amount", amount);
             add(donation, "batchNumber", row.get("Fund Hist Batch Number"));
             add(donation, "donationDate", mapDate(row.get("Fund Hist Date")));
             add(donation, "donationType", "UNKNOWN");
@@ -584,7 +610,9 @@ public class PDSImport {
         if(isEmpty(input)) return "OTHER";
         switch (input) {
             case "His cell":
+            case "his cell":
             case "Her cell":
+            case "her cell":
             case "Wife cell":
             case "Husband Cell":
             case "Cell":
@@ -595,14 +623,22 @@ public class PDSImport {
             case "Work":
             case "Work Her":
             case "Her work":
+            case "Her Work":
+            case "Unl. Her Work":
+            case "her work":
             case "His work":
+            case "his work":
+            case "Unl. his work":
             case "Work He":
             case "Work-He":
             case "Work-C":
                 return "WORK";
             case "Sch Ofc":
             case "Her fax":
+            case "his fax":
+            case "Fax":
             case "Gregg-W": // WTF?
+            case "Barry":
                 return "OTHER";
             default:
                 throw new IllegalArgumentException("Could not map Phone Type: " + input);
