@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class SessionServiceClient extends AbstractServiceClient {
+public class SessionServiceClient extends BaseServiceClient {
 
     public SessionServiceClient(int id) { super(String.format("/rest/program/%d/session", id)); }
 

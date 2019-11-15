@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class RegistrationServiceClient extends AbstractServiceClient {
+public class RegistrationServiceClient extends BaseServiceClient {
 
     public RegistrationServiceClient(int id) { super(String.format("/rest/program/%d/registration", id)); }
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MinistryServiceClient extends AbstractServiceClient {
+public class MinistryServiceClient extends BaseServiceClient {
 
     private Map<String, Integer> ministryIdCache = new HashMap<>(16);
     private boolean ministriesLoaded = false;

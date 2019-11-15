@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RoomServiceClient extends AbstractServiceClient {
+public class RoomServiceClient extends BaseServiceClient {
 
     private Map<String, Integer> roomIdCache = new HashMap<>(16);
     private boolean roomsLoaded = false;

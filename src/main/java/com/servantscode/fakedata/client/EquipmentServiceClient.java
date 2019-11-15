@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EquipmentServiceClient extends AbstractServiceClient {
+public class EquipmentServiceClient extends BaseServiceClient {
 
     private Map<String, Integer> equipmentIdCache = new HashMap<>(16);
     private boolean equipmentLoaded = false;

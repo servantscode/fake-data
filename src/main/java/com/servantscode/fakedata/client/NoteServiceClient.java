@@ -4,7 +4,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class NoteServiceClient extends AbstractServiceClient {
+public class NoteServiceClient extends BaseServiceClient {
 
     public NoteServiceClient() { super("/rest/note"); }
 

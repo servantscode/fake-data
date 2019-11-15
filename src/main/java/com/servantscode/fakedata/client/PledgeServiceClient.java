@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class PledgeServiceClient extends AbstractServiceClient {
+public class PledgeServiceClient extends BaseServiceClient {
 
 //    public PledgeServiceClient() { super("http://donation-svc:8080/rest/pledge"); }
     public PledgeServiceClient() { super("/rest/pledge"); }

@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class FundServiceClient extends AbstractServiceClient {
+public class FundServiceClient extends BaseServiceClient {
 
     //public DonationServiceClient() { super("http://donation-svc:8080/rest/donation"); }
     public FundServiceClient() { super("/rest/fund"); }

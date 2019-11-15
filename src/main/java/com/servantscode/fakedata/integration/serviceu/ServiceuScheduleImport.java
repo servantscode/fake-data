@@ -1,11 +1,9 @@
 package com.servantscode.fakedata.integration.serviceu;
 
-import com.servantscode.fakedata.client.AbstractServiceClient;
 import com.servantscode.fakedata.client.EventServiceClient;
 import com.servantscode.fakedata.client.PersonServiceClient;
 import com.servantscode.fakedata.client.RoomServiceClient;
 import com.servantscode.fakedata.integration.CSVParser;
-import com.servantscode.fakedata.integration.recurrence.RecurrenceProcessor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ofPattern;
-import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static org.servantscode.commons.StringUtils.isEmpty;
 import static org.servantscode.commons.StringUtils.isSet;
@@ -29,8 +26,8 @@ public class ServiceuScheduleImport {
         String filePath = null;
         File importFile = new File(filePath);
 
-//        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
-//        AbstractServiceClient.login("user", "password");
+//        BaseServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
+//        BaseServiceClient.login("user", "password");
         new ServiceuScheduleImport().processFile(importFile, true);
     }
 

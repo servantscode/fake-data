@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class AttendanceServiceClient extends AbstractServiceClient {
+public class AttendanceServiceClient extends BaseServiceClient {
 
     public AttendanceServiceClient(int programId) { super(String.format("/rest/program/%d", programId)); }
 

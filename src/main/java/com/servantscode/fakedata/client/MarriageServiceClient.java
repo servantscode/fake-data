@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class MarriageServiceClient extends AbstractServiceClient {
+public class MarriageServiceClient extends BaseServiceClient {
 
     public MarriageServiceClient() { super("/rest/sacrament/marriage"); }
 

@@ -40,8 +40,8 @@ public class PDSImport {
 
         boolean dryRun = false;
 
-//        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
-//        AbstractServiceClient.login("name", "password");
+//        BaseServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
+//        BaseServiceClient.login("name", "password");
 //        new PDSImport().processFiles(asList(familyFile, inactiveFamilyFile), asList(peopleFile), asList(donationFile), dryRun);
         new PDSImport().processFiles(asList(familyFile), asList(peopleFile), asList(donationFile), dryRun);
     }

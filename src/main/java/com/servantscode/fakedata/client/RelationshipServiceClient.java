@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class RelationshipServiceClient extends AbstractServiceClient {
+public class RelationshipServiceClient extends BaseServiceClient {
 
     public RelationshipServiceClient() { super("/rest/relationship"); }
 

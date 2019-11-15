@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventServiceClient extends AbstractServiceClient {
+public class EventServiceClient extends BaseServiceClient {
 
     public EventServiceClient() { super("/rest/event"); }
 

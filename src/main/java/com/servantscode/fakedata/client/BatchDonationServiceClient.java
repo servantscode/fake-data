@@ -1,12 +1,11 @@
 package com.servantscode.fakedata.client;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
 
-public class BatchDonationServiceClient extends AbstractServiceClient {
+public class BatchDonationServiceClient extends BaseServiceClient {
 
     public BatchDonationServiceClient() { super("/rest/donation/batch"); }
 

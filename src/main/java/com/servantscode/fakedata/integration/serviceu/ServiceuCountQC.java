@@ -20,8 +20,8 @@ public class ServiceuCountQC {
         String filePath = "c:\\Users\\gleit\\stgabriel\\events-5-14.csv";
         File importFile = new File(filePath);
 
-//        AbstractServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
-//        AbstractServiceClient.login("user", "password");
+//        BaseServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
+//        BaseServiceClient.login("user", "password");
         new ServiceuCountQC().processFile(importFile, true, 1);
     }
 

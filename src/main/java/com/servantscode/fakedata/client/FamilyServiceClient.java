@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-public class FamilyServiceClient extends AbstractServiceClient {
+public class FamilyServiceClient extends BaseServiceClient {
 
     public FamilyServiceClient() { super("/rest/family"); }
 

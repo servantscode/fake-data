@@ -3,7 +3,7 @@ package com.servantscode.fakedata.client;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 
-public class EnrollmentServiceClient extends AbstractServiceClient {
+public class EnrollmentServiceClient extends BaseServiceClient {
 
     //public EnrollmentServiceClient() { super("http://ministry-svc:8080/rest/enrollment"); }
     public EnrollmentServiceClient() { super("/rest/enrollment"); }

@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class BaptismServiceClient extends AbstractServiceClient {
+public class BaptismServiceClient extends BaseServiceClient {
 
     public BaptismServiceClient() { super("/rest/sacrament/baptism"); }
 

@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class ProgramServiceClient extends AbstractServiceClient {
+public class ProgramServiceClient extends BaseServiceClient {
 
     public ProgramServiceClient() { super("/rest/program"); }
 

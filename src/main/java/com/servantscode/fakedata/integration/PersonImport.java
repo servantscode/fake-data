@@ -1,21 +1,14 @@
 package com.servantscode.fakedata.integration;
 
-import com.servantscode.fakedata.client.AbstractServiceClient;
-import com.servantscode.fakedata.client.EventServiceClient;
+import com.servantscode.fakedata.client.BaseServiceClient;
 import com.servantscode.fakedata.client.PersonServiceClient;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-import static org.servantscode.commons.StringUtils.isEmpty;
 import static org.servantscode.commons.StringUtils.isSet;
 
 public class PersonImport {
@@ -23,8 +16,8 @@ public class PersonImport {
         String filePath = "c:\\Users\\gleit\\stgabriel\\people.csv";
         File importFile = new File(filePath);
 
-        AbstractServiceClient.setUrlPrefix("https://stgabriel.servantscode.org");
-        AbstractServiceClient.login("greg@servantscode.org", "S3rv@nt1HasTh1s");
+        BaseServiceClient.setUrlPrefix("https://stgabriel.servantscode.org");
+        BaseServiceClient.login("greg@servantscode.org", "S3rv@nt1HasTh1s");
         new PersonImport().processFile(importFile, false);
     }
 

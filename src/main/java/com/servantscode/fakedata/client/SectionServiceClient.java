@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class SectionServiceClient extends AbstractServiceClient {
+public class SectionServiceClient extends BaseServiceClient {
 
     public SectionServiceClient(int id) { super(String.format("/rest/program/%d/section", id)); }
 

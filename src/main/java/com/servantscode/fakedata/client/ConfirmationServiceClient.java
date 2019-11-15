@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 import java.util.Map;
 
 
-public class ConfirmationServiceClient extends AbstractServiceClient {
+public class ConfirmationServiceClient extends BaseServiceClient {
 
     public ConfirmationServiceClient() { super("/rest/sacrament/confirmation"); }
 

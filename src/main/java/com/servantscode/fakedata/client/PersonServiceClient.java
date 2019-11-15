@@ -7,12 +7,11 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 
-public class PersonServiceClient extends AbstractServiceClient {
+public class PersonServiceClient extends BaseServiceClient {
 
     public PersonServiceClient() { super("/rest/person"); }
 
