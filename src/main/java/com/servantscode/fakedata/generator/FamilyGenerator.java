@@ -1,7 +1,7 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.PersonServiceClient;
-import com.servantscode.fakedata.client.RelationshipServiceClient;
+import org.servantscode.client.PersonServiceClient;
+import org.servantscode.client.RelationshipServiceClient;
 
 import java.io.IOException;
 import java.time.LocalDate;

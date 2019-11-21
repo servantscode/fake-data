@@ -1,6 +1,6 @@
 package com.servantscode.fakedata.integration.pds;
 
-import com.servantscode.fakedata.client.FamilyServiceClient;
+import org.servantscode.client.FamilyServiceClient;
 
 public class Rollback {
     public static void main(String[] args) {

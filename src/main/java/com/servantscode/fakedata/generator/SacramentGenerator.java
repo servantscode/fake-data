@@ -1,6 +1,8 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.*;
+import org.servantscode.client.BaptismServiceClient;
+import org.servantscode.client.ConfirmationServiceClient;
+import org.servantscode.client.MarriageServiceClient;
 
 import java.io.IOException;
 import java.time.LocalDate;

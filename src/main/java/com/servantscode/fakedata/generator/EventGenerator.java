@@ -1,9 +1,9 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.EquipmentServiceClient;
-import com.servantscode.fakedata.client.EventServiceClient;
-import com.servantscode.fakedata.client.MinistryServiceClient;
-import com.servantscode.fakedata.client.RoomServiceClient;
+import org.servantscode.client.EquipmentServiceClient;
+import org.servantscode.client.EventServiceClient;
+import org.servantscode.client.MinistryServiceClient;
+import org.servantscode.client.RoomServiceClient;
 
 import java.time.DayOfWeek;
 import java.time.Duration;

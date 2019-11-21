@@ -1,6 +1,6 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.EquipmentServiceClient;
+import org.servantscode.client.EquipmentServiceClient;
 
 import java.util.HashMap;
 import java.util.Map;

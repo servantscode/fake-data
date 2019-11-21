@@ -1,13 +1,15 @@
 package com.servantscode.fakedata.integration;
 
-import com.servantscode.fakedata.client.BaseServiceClient;
-import com.servantscode.fakedata.client.PersonServiceClient;
+import org.servantscode.client.BaseServiceClient;
+import org.servantscode.client.PersonServiceClient;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.servantscode.commons.StringUtils.isSet;
 

@@ -1,9 +1,9 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.DonationServiceClient;
-import com.servantscode.fakedata.client.FamilyServiceClient;
-import com.servantscode.fakedata.client.FundServiceClient;
-import com.servantscode.fakedata.client.PledgeServiceClient;
+import org.servantscode.client.DonationServiceClient;
+import org.servantscode.client.FamilyServiceClient;
+import org.servantscode.client.FundServiceClient;
+import org.servantscode.client.PledgeServiceClient;
 
 import java.io.IOException;
 import java.time.DayOfWeek;

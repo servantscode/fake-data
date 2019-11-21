@@ -1,6 +1,6 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.*;
+import org.servantscode.client.*;
 
 import java.io.IOException;
 import java.time.LocalDate;

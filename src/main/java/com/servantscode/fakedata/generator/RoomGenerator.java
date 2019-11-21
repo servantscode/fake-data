@@ -1,6 +1,6 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.RoomServiceClient;
+import org.servantscode.client.RoomServiceClient;
 
 import java.io.IOException;
 import java.util.HashMap;

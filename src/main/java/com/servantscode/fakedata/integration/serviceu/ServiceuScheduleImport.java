@@ -1,9 +1,9 @@
 package com.servantscode.fakedata.integration.serviceu;
 
-import com.servantscode.fakedata.client.EventServiceClient;
-import com.servantscode.fakedata.client.PersonServiceClient;
-import com.servantscode.fakedata.client.RoomServiceClient;
 import com.servantscode.fakedata.integration.CSVParser;
+import org.servantscode.client.EventServiceClient;
+import org.servantscode.client.PersonServiceClient;
+import org.servantscode.client.RoomServiceClient;
 
 import java.io.BufferedReader;
 import java.io.File;

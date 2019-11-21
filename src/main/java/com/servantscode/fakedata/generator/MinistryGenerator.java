@@ -1,9 +1,9 @@
 package com.servantscode.fakedata.generator;
 
-import com.servantscode.fakedata.client.EnrollmentServiceClient;
-import com.servantscode.fakedata.client.MinistryRoleServiceClient;
-import com.servantscode.fakedata.client.MinistryServiceClient;
-import com.servantscode.fakedata.client.PersonServiceClient;
+import org.servantscode.client.EnrollmentServiceClient;
+import org.servantscode.client.MinistryRoleServiceClient;
+import org.servantscode.client.MinistryServiceClient;
+import org.servantscode.client.PersonServiceClient;
 
 import java.io.IOException;
 import java.util.*;
