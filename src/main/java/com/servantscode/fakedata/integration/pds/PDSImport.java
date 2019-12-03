@@ -28,13 +28,11 @@ public class PDSImport {
 
     public static void main(String[] args) throws Exception {
 
-        String familyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\st francis\\st-francis-families.csv";
-//        String inactiveFamilyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-inactive.csv";
-        String peopleFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\st francis\\st-francis-members.csv";
-        String donationFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\st francis\\st-francis-donations.csv";
+        String familyFilePath = null;
+        String peopleFilePath = null;
+        String donationFilePath = null;
 
         File familyFile = new File(familyFilePath);
-//        File inactiveFamilyFile = new File(inactiveFamilyFilePath);
         File peopleFile = new File(peopleFilePath);
         File donationFile = new File(donationFilePath);
 
@@ -42,7 +40,6 @@ public class PDSImport {
 
 //        BaseServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
 //        BaseServiceClient.login("name", "password");
-//        new PDSImport().processFiles(asList(familyFile, inactiveFamilyFile), asList(peopleFile), asList(donationFile), dryRun);
         new PDSImport().processFiles(asList(familyFile), asList(peopleFile), asList(donationFile), dryRun);
     }
 

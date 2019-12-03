@@ -15,11 +15,11 @@ import static org.servantscode.commons.StringUtils.isSet;
 
 public class PersonImport {
     public static void main(String[] args) throws IOException {
-        String filePath = "c:\\Users\\gleit\\stgabriel\\people.csv";
+        String filePath = null;
         File importFile = new File(filePath);
 
-        BaseServiceClient.setUrlPrefix("https://stgabriel.servantscode.org");
-        BaseServiceClient.login("greg@servantscode.org", "S3rv@nt1HasTh1s");
+//        BaseServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
+//        BaseServiceClient.login("", "");
         new PersonImport().processFile(importFile, false);
     }
 
