@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static com.servantscode.fakedata.generator.RandomSelector.rand;
 import static com.servantscode.fakedata.generator.RandomSelector.select;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class DonationGenerator {
 
@@ -45,12 +46,26 @@ public class DonationGenerator {
         int familyCount = new FamilyServiceClient().getFamilyCount();
         int[] donors = RandomSelector.randomNumbers(familyCount, numberOfDonors);
 
+        LocalDate start = LocalDate.now().withDayOfYear(1);
+        LocalDate end = LocalDate.now();
+
         for(int i=0; i<numberOfDonors; i++) {
             int fundSelector = RandomSelector.rand.nextInt(100);
             if(fundSelector < 90)
-                new DonationGenerator().generateDonationPattern(donors[i] + 1, generalFundId); // Never use 0
+                new DonationGenerator().generateDonationPattern(donors[i] + 1, generalFundId, start, end); // Never use 0
             if(fundSelector > 70)
-                new DonationGenerator().generateDonationPattern(donors[i] + 1, buildingFundId); // Never use 0
+                new DonationGenerator().generateDonationPattern(donors[i] + 1, buildingFundId, start, end); // Never use 0
+        }
+    }
+
+    public static void generate(int numberOfDonors, LocalDate start, LocalDate end) throws IOException {
+        int generalFundId = 1; //In db setup
+
+        int familyCount = new FamilyServiceClient().getFamilyCount();
+        int[] donors = RandomSelector.randomNumbers(familyCount, numberOfDonors);
+
+        for(int i=0; i<numberOfDonors; i++) {
+            new DonationGenerator().generateDonationPattern(donors[i] + 1, generalFundId, start, end); // Never use 0
         }
     }
 
@@ -61,17 +76,19 @@ public class DonationGenerator {
         return (Integer)fund.get("id");
     }
 
-    private void generateDonationPattern(int familyId, int fundId) {
+    private void generateDonationPattern(int familyId, int fundId, LocalDate start, LocalDate end) {
         Map<String, Object> pledge = generatePledge(familyId, fundId);
 
         String freq = (String) pledge.get("pledgeFrequency");
-        int payments = Math.round(1f*LocalDate.now().getDayOfYear()/365*getPayments(freq));
 
         if(rand.nextInt(100) > 90) // 10% of pledges are ignored
             return;
 
+//        int payments = Math.round(1f*LocalDate.now().getDayOfYear()/365*getPayments(freq));
+        int payments = Math.round(1f*(start.until(end, DAYS))/365*getPayments(freq));
+
         for(int i=0; i<payments; i++) {
-            generateDonation(pledge, i, fundId);
+            generateDonation(pledge, i, fundId, start);
 
             if(rand.nextInt(100) > 99) // 1% of donations are someone's last one
                 return;
@@ -106,7 +123,7 @@ public class DonationGenerator {
         return pledge;
     }
 
-    private void generateDonation(Map<String, Object> pledge, int paymentNumber, int fundId) {
+    private void generateDonation(Map<String, Object> pledge, int paymentNumber, int fundId, LocalDate start) {
         if(rand.nextInt(100) > 95) {
             missedDonations++;
             return;
@@ -114,7 +131,7 @@ public class DonationGenerator {
 
         String freq = (String) pledge.get("pledgeFrequency");
         String pledgeType = (String) pledge.get("pledgeType");
-        LocalDate donationDate = getDonationDate(freq, pledgeType, paymentNumber);
+        LocalDate donationDate = getDonationDate(freq, pledgeType, paymentNumber, start);
         if(donationDate.isAfter(LocalDate.now()))
             return;
 
@@ -144,12 +161,12 @@ public class DonationGenerator {
         donationClient.createDonation(donation);
     }
 
-    private LocalDate getDonationDate(String freq, String pledgeType, int paymentNumber) {
+    private LocalDate getDonationDate(String freq, String pledgeType, int paymentNumber, LocalDate start) {
         int totalPayments = getPayments(freq);
         float paymentSpan = 1f*365/totalPayments;
         int dayStart = Math.round(paymentNumber*paymentSpan)+7; //Make sure that we're into the time period in question
 
-        LocalDate date = LocalDate.now().withDayOfYear(dayStart).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        LocalDate date = start.withDayOfYear(dayStart).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
         if(pledgeType.equals("EGIFT"))
             date = date.plusDays(rand.nextInt(Math.round(paymentSpan))-7);
 

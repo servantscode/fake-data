@@ -3,6 +3,7 @@ package com.servantscode.fakedata;
 import com.servantscode.fakedata.generator.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class FakeDataGenerator {
     public static void main(String[] args) throws IOException {
@@ -16,6 +17,8 @@ public class FakeDataGenerator {
         EventGenerator.generate();
         FormationGenerator.generate();
         new SacramentGenerator().generate();
+//        LocalDate startOfLastYear = LocalDate.now().withDayOfYear(1).minusYears(1);
+//        DonationGenerator.generate(40, startOfLastYear, startOfLastYear.plusYears(1));
     }
 }
 

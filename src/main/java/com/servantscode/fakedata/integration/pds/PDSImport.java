@@ -7,9 +7,15 @@ import com.servantscode.fakedata.integration.CSVParser;
 import org.servantscode.client.*;
 import org.servantscode.commons.StringUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -26,21 +32,54 @@ public class PDSImport {
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    public static final String DEFAULT_SYSTEM = "https://demo.servantscode.org";
+    public static final String DEFAULT_USER = "greg@servantscode.org";
+
     public static void main(String[] args) throws Exception {
 
-        String familyFilePath = null;
-        String peopleFilePath = null;
-        String donationFilePath = null;
+        String familyFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-active2.csv";
+        String familyFilePath2 = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\family-inactive.csv";
+        String peopleFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\sc-export.csv";
+        String donationFilePath = "C:\\Users\\gleit\\Desktop\\Parishes\\St. Mary\\donation-history-all.csv";
 
         File familyFile = new File(familyFilePath);
+        File familyFile2 = new File(familyFilePath2);
         File peopleFile = new File(peopleFilePath);
         File donationFile = new File(donationFilePath);
 
         boolean dryRun = false;
 
-//        BaseServiceClient.setUrlPrefix("https://<parish>.servantscode.org");
-//        BaseServiceClient.login("name", "password");
-        new PDSImport().processFiles(asList(familyFile), asList(peopleFile), asList(donationFile), dryRun);
+        doLogin();
+        new PDSImport().processFiles(asList(familyFile, familyFile2), asList(peopleFile), asList(donationFile), dryRun);
+    }
+
+    private static void doLogin() throws IOException {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Which system? [" + DEFAULT_SYSTEM + "]");
+        String system = input.readLine();
+        if(isEmpty(system))
+            system = DEFAULT_SYSTEM;
+        if(!system.contains("//"))
+            system = "https://" + system;
+        if(!system.contains("."))
+            system = system + ".servantscode.org";
+
+        System.out.println(String.format("Connecting to %s.", system));
+
+        ApiClientFactory apiFactory = ApiClientFactory.instance();
+        apiFactory.setExternalPrefix(system);
+
+        System.out.println("User? [" + DEFAULT_USER + "]");
+        String user = input.readLine();
+        if(isEmpty(user))
+            user = DEFAULT_USER;
+
+        System.out.println("Password? []");
+        String password = input.readLine();
+        if(isEmpty(user))
+            throw new RuntimeException("No password supplied.");
+
+        BaseServiceClient.login(user, password);
     }
 
     HashMap<String, Map<String, Object>> knownFamilies = new HashMap<>(1024);
@@ -80,9 +119,9 @@ public class PDSImport {
         generateTemplatePeople(familyData, personData);
         createPeople(personData);
 
-        storeFamilies(dryRun);
-        applyNotes(familyData, personData, dryRun);
-        updateRelationships(dryRun);
+//        storeFamilies(dryRun);
+//        applyNotes(familyData, personData, dryRun);
+//        updateRelationships(dryRun);
         createFunds(donationData, dryRun);
         importDonations(donationData, dryRun);
     }
@@ -358,11 +397,11 @@ public class PDSImport {
 //            add(person, "confirmed", ??);
 
             add(person, "maritalStatus", mapMaritalStatus(row.get("Fam Family Status")));
-//            add(person, "ethnicity", mapEthnicity(row.get("Mem Ethnicity")));
+//            add(person, "ethnicity", ??);
             add(person, "primaryLanguage", mapLanguage(row.get("Fam Language")));
-//            add(person, "religion", mapReligion(row.get("Mem Religion")));
+//            add(person, "religion", ??);
 //            add(person, "specialNeeds", ??);
-//            add(person, "occupation", row.get("Mem Occupation"));
+//            add(person, "occupation", ??);
 
             addPersonToFamily(person, family);
 
@@ -418,23 +457,38 @@ public class PDSImport {
                 createdFund = fund;
                 createdFund.put("id", fundsImported);
             } else {
-                createdFund = fundClient.createFund(fund);
+                createdFund = findOrCreateFund(fund);
             }
             knownFunds.put((String)createdFund.get("name"), (Integer)createdFund.get("id"));
         }
     }
 
+    private Map<String, Object> findOrCreateFund(HashMap<String, Object> fund) {
+        int fundId = fundClient.getFundId((String) fund.get("name"));
+        if(fundId != 0) {
+            fund.put("id", fundId);
+            return fund;
+        } else
+            return fundClient.createFund(fund);
+    }
+
     private void importDonations(CSVData donationData, boolean dryRun) throws JsonProcessingException {
         int donationsImported = 0;
+        int totalDonations = donationData.rowData.size();
+        int processingLine = 0;
+        long start = System.currentTimeMillis();
+
         List<Map<String, Object>> batch = new LinkedList<>();
         for(HashMap<String, String> row: donationData.rowData) {
+            processingLine++;
+
             String familyUID = row.get("Fam Unique ID");
 
             String fundName = row.get("Fund Hist Activity");
             String amount = row.get("Fund Hist Amount");
 
             if(isEmpty(fundName)) {
-                if (isEmpty(amount) || amount.equals("0.00")) {
+                if (isEmpty(amount) || amount.equals("0.00") || amount.equals("0")) {
                     System.out.println("Found bad donation record... Skipping");
                     continue;
                 } else {
@@ -442,12 +496,24 @@ public class PDSImport {
                 }
             }
 
+            Map<String, Object> family = knownFamilies.get(familyUID);
+            if(family == null || family.get("id") == null) {
+                System.err.println(String.format("Donation on %s cannot be mapped to family %s", row.get("Fund Hist Date"), familyUID));
+                continue;
+            }
+
             HashMap<String, Object> donation = new HashMap<>(32);
-            add(donation, "familyId", knownFamilies.get(familyUID).get("id"));
+            add(donation, "familyId", family.get("id"));
             add(donation, "fundId", knownFunds.get(fundName));
             add(donation, "amount", amount);
+            add(donation, "deductibleAmount", amount);
             add(donation, "batchNumber", row.get("Fund Hist Batch Number"));
-            add(donation, "donationDate", mapDate(row.get("Fund Hist Date")));
+            LocalDate donationDate = mapDate(row.get("Fund Hist Date"));
+            if(donationDate.isAfter(LocalDate.now())) {
+                System.err.println(String.format("Skipping: Donation recorded for future date %s for family %s", row.get("Fund Hist Date"), familyUID));
+                continue;
+            }
+            add(donation, "donationDate", donationDate);
             add(donation, "donationType", "UNKNOWN");
             add(donation, "notes", row.get("Fund Hist Comment"));
 
@@ -461,9 +527,10 @@ public class PDSImport {
             } else {
                 batch.add(donation);
 
-                if(batch.size() > 100) {
+                if(batch.size() > 99) {
                     donationClient.createDonations(batch);
                     batch.clear();
+                    System.out.println(String.format("Batch processed. %.4f (%d/%d) elapsed time: %d minutes.", (processingLine*1.0f)/totalDonations, processingLine, totalDonations, (System.currentTimeMillis() - start)/60000));
                 }
             }
         }
