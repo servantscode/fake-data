@@ -18,7 +18,7 @@ public class FakeDataGenerator {
         FormationGenerator.generate();
         new SacramentGenerator().generate();
 //        LocalDate startOfLastYear = LocalDate.now().withDayOfYear(1).minusYears(1);
-//        DonationGenerator.generate(40, startOfLastYear, startOfLastYear.plusYears(1));
+//        DonationGenerator.generate(40, startOfLastYear, startOfLastYear.plusYears(1).minusDays(1));
     }
 }
 

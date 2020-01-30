@@ -530,7 +530,7 @@ public class PDSImport {
                 if(batch.size() > 99) {
                     donationClient.createDonations(batch);
                     batch.clear();
-                    System.out.println(String.format("Batch processed. %.4f (%d/%d) elapsed time: %d minutes.", (processingLine*1.0f)/totalDonations, processingLine, totalDonations, (System.currentTimeMillis() - start)/60000));
+                    System.out.println(String.format("Batch processed. %.4f%% (%d/%d) elapsed time: %d minutes.", (processingLine*100.0f)/totalDonations, processingLine, totalDonations, (System.currentTimeMillis() - start)/60000));
                 }
             }
         }

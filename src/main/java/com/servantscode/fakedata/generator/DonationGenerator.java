@@ -77,7 +77,7 @@ public class DonationGenerator {
     }
 
     private void generateDonationPattern(int familyId, int fundId, LocalDate start, LocalDate end) {
-        Map<String, Object> pledge = generatePledge(familyId, fundId);
+        Map<String, Object> pledge = generatePledge(familyId, fundId, start, end);
 
         String freq = (String) pledge.get("pledgeFrequency");
 
@@ -95,9 +95,7 @@ public class DonationGenerator {
         }
     }
 
-    private Map<String, Object> generatePledge(int familyId, int fundId) {
-        LocalDate now = LocalDate.now();
-
+    private Map<String, Object> generatePledge(int familyId, int fundId, LocalDate start, LocalDate end) {
         String pledgeType = select(PLEDGE_TYPES);
         String pledgeFreq = select(PLEDGE_FREQ);
         float amount = (float) RandomSelector.rand.nextInt(1000);
@@ -108,9 +106,9 @@ public class DonationGenerator {
         pledge.put("pledgeType", pledgeType);
         pledge.put("pledgeFrequency", pledgeFreq);
         pledge.put("pledgeAmount", amount);
-        pledge.put("pledgeDate", now.minusMonths(now.getMonthValue() + 1));
-        pledge.put("pledgeStart", LocalDate.now().withDayOfYear(1));
-        pledge.put("pledgeEnd", LocalDate.now().withDayOfYear(1).plusYears(1));
+        pledge.put("pledgeDate", LocalDate.now().withMonth(start.getMonthValue()));
+        pledge.put("pledgeStart", start);
+        pledge.put("pledgeEnd", end);
         pledge.put("annualPledgeAmount", amount*getPayments(pledgeFreq));
 
         if(rand.nextInt(100) < 80) {// 20% of the time don't pledge, just give
