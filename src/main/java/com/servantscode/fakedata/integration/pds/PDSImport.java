@@ -2,6 +2,7 @@ package com.servantscode.fakedata.integration.pds;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.servantscode.fakedata.DataImport;
 import com.servantscode.fakedata.integration.CSVData;
 import com.servantscode.fakedata.integration.CSVParser;
 import org.servantscode.client.*;
@@ -28,12 +29,9 @@ import static java.util.stream.Collectors.toList;
 import static org.servantscode.commons.StringUtils.isEmpty;
 import static org.servantscode.commons.StringUtils.isSet;
 
-public class PDSImport {
+public class PDSImport extends DataImport {
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    public static final String DEFAULT_SYSTEM = "https://demo.servantscode.org";
-    public static final String DEFAULT_USER = "greg@servantscode.org";
 
     public static void main(String[] args) throws Exception {
 
@@ -51,35 +49,6 @@ public class PDSImport {
 
         doLogin();
         new PDSImport().processFiles(asList(familyFile, familyFile2), asList(peopleFile), asList(donationFile), dryRun);
-    }
-
-    private static void doLogin() throws IOException {
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Which system? [" + DEFAULT_SYSTEM + "]");
-        String system = input.readLine();
-        if(isEmpty(system))
-            system = DEFAULT_SYSTEM;
-        if(!system.contains("//"))
-            system = "https://" + system;
-        if(!system.contains("."))
-            system = system + ".servantscode.org";
-
-        System.out.println(String.format("Connecting to %s.", system));
-
-        ApiClientFactory apiFactory = ApiClientFactory.instance();
-        apiFactory.setExternalPrefix(system);
-
-        System.out.println("User? [" + DEFAULT_USER + "]");
-        String user = input.readLine();
-        if(isEmpty(user))
-            user = DEFAULT_USER;
-
-        System.out.println("Password? []");
-        String password = input.readLine();
-        if(isEmpty(user))
-            throw new RuntimeException("No password supplied.");
-
-        BaseServiceClient.login(user, password);
     }
 
     HashMap<String, Map<String, Object>> knownFamilies = new HashMap<>(1024);
