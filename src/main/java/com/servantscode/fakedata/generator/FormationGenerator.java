@@ -67,31 +67,31 @@ public class FormationGenerator {
         program.put("coordinatorId", personSelector.randomAdult().get("id"));
 
         program = programClient.createProgram(program);
-        List<Map<String, Object>> sections = generateSections(program, classes);
+        List<Map<String, Object>> classrooms = generateClassrooms(program, classes);
         linkSessions(program, LocalDate.now());
-        Map<Integer, List<Map<String, Object>>> registrations = generateRegistrations(sections, 10);
-        generateAttendance(sections, registrations);
+        Map<Integer, List<Map<String, Object>>> registrations = generateRegistrations(classrooms, 10);
+        generateAttendance(classrooms, registrations);
 
         return program;
     }
 
-    private List<Map<String, Object>> generateSections(Map<String, Object> program, List<String> classes) {
-        SectionServiceClient sectionClient = new SectionServiceClient((int) program.get("id"));
+    private List<Map<String, Object>> generateClassrooms(Map<String, Object> program, List<String> classes) {
+        ClassroomServiceClient classroomClient = new ClassroomServiceClient((int) program.get("id"));
 
-        List<Map<String, Object>> sections = new LinkedList<>();
+        List<Map<String, Object>> classrooms = new LinkedList<>();
         List<Integer> classRoomIds = randomClassRooms(classes.size());
         int roomIter = 0;
         for(String name: classes) {
-            Map<String, Object> section = new HashMap<>();
-            section.put("name", name);
-            section.put("programId", program.get("id"));
-            section.put("instructorId", personSelector.randomAdult().get("id"));
-            section.put("roomId", classRoomIds.get(roomIter++));
+            Map<String, Object> classroom = new HashMap<>();
+            classroom.put("name", name);
+            classroom.put("programId", program.get("id"));
+            classroom.put("instructorId", personSelector.randomAdult().get("id"));
+            classroom.put("roomId", classRoomIds.get(roomIter++));
 
-            sections.add(sectionClient.createSection(section));
+            classrooms.add(classroomClient.createClassroom(classroom));
         }
 
-        return sections;
+        return classrooms;
     }
 
 // Sessions
@@ -108,17 +108,17 @@ public class FormationGenerator {
     }
 
 // Registrations
-    private Map<Integer, List<Map<String, Object>>> generateRegistrations(List<Map<String, Object>> sections, int kidsPer) {
-        int programId = (int) sections.get(0).get("programId");
+    private Map<Integer, List<Map<String, Object>>> generateRegistrations(List<Map<String, Object>> classrooms, int kidsPer) {
+        int programId = (int) classrooms.get(0).get("programId");
         RegistrationServiceClient registrationClient = new RegistrationServiceClient(programId);
         LocalDate yearStart = LocalDate.now().withMonth(9).withDayOfMonth(1);
-        Map<Integer, List<Map<String, Object>>> registrationsBySection = new HashMap<>();
+        Map<Integer, List<Map<String, Object>>> registrationsByClassroom = new HashMap<>();
 
-        for(Map<String, Object> section: sections) {
+        for(Map<String, Object> classroom: classrooms) {
             List<Map<String, Object>> registrations = new LinkedList<>();
-            int sectionId = (int) section.get("id");
+            int classroomId = (int) classroom.get("id");
 
-            int age = getAgeFor((String) section.get("name"));
+            int age = getAgeFor((String) classroom.get("name"));
             String query = String.format("birthdate:[%s TO %s]", yearStart.minusYears(age).format(ISO_DATE), yearStart.minusYears(age-1).format(ISO_DATE));
             List<Integer> childIds = personClient.getPersonIds(query);
             if(childIds.size() > kidsPer)
@@ -126,33 +126,33 @@ public class FormationGenerator {
 
             Map<String, Object> reg = new HashMap<>();
             reg.put("programId", programId);
-            reg.put("sectionId", sectionId);
-            reg.put("schoolGrade", gradeNumberForSection((String) section.get("name")));
+            reg.put("classroomId", classroomId);
+            reg.put("schoolGrade", gradeNumberForClassroom((String) classroom.get("name")));
             for(int child: childIds){
                 reg.put("enrolleeId", child);
                 registrations.add(registrationClient.createRegistration(reg));
             }
-            registrationsBySection.put(sectionId, registrations);
+            registrationsByClassroom.put(classroomId, registrations);
         }
-        return registrationsBySection;
+        return registrationsByClassroom;
     }
 
 // Attendance
-    private void generateAttendance(List<Map<String, Object>> sections, Map<Integer, List<Map<String, Object>>> registrations) {
-        int programId = (int) sections.get(0).get("programId");
+    private void generateAttendance(List<Map<String, Object>> classrooms, Map<Integer, List<Map<String, Object>>> registrations) {
+        int programId = (int) classrooms.get(0).get("programId");
         SessionServiceClient sessionClient = new SessionServiceClient(programId);
         AttendanceServiceClient attendanceClient = new AttendanceServiceClient(programId);
         List<Map<String, Object>> sessions = sessionClient.getPastSessions();
 
-        for(Map<String, Object> section: sections) {
-            int sectionId = (int) section.get("id");
+        for(Map<String, Object> classroom: classrooms) {
+            int classroomId = (int) classroom.get("id");
             Map<String, Object> attendance = new HashMap<>();
             attendance.put("programId", programId);
-            attendance.put("sectionId", sectionId);
+            attendance.put("classroomId", classroomId);
             for(Map<String, Object> session: sessions) {
                 attendance.put("sessionId", session.get("id"));
-                attendance.put("enrolleeAttendance", generateEnrolleeAttendance(registrations.get(sectionId)));
-                attendanceClient.recordAttendance(attendance, sectionId);
+                attendance.put("enrolleeAttendance", generateEnrolleeAttendance(registrations.get(classroomId)));
+                attendanceClient.recordAttendance(attendance, classroomId);
             }
         }
     }
@@ -175,11 +175,11 @@ public class FormationGenerator {
     }
 
     private int getAgeFor(String gradeName){
-        String grade = gradeNumberForSection(gradeName);
+        String grade = gradeNumberForClassroom(gradeName);
         return grade.equals("K")? 5: Integer.parseInt(grade)+5;
     }
 
-    private String gradeNumberForSection(String gradeName) {
+    private String gradeNumberForClassroom(String gradeName) {
         if(gradeName.equals("Kindergarten"))
             return "K";
         return gradeName.replaceAll("\\D", "");
