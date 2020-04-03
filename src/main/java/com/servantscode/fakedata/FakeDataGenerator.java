@@ -8,13 +8,13 @@ import java.time.LocalDate;
 public class FakeDataGenerator extends DataImport {
     public static void main(String[] args) throws IOException {
 //        doLogin();
-//
-//        FamilyGenerator.generate(100);
-//        MinistryGenerator.generate(1000);
-//        DonationGenerator.generate(40);
-//        RoomGenerator.generate();
-//        EquipmentGenerator.generate();
-//        EventGenerator.generate();
+
+        FamilyGenerator.generate(100);
+        MinistryGenerator.generate(1000);
+        DonationGenerator.generate(40);
+        RoomGenerator.generate();
+        EquipmentGenerator.generate();
+        EventGenerator.generate();
         FormationGenerator.generate();
         new SacramentGenerator().generate();
         LocalDate startOfLastYear = LocalDate.now().withDayOfYear(1).minusYears(1);
