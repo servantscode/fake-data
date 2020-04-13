@@ -18,6 +18,7 @@ public class FormationGenerator {
     private final PersonServiceClient personClient;
     private final RoomServiceClient roomClient;
     private final EventServiceClient eventClient;
+
     private final PersonSelector personSelector;
 
     public FormationGenerator() {
@@ -26,6 +27,7 @@ public class FormationGenerator {
         personClient = new PersonServiceClient();
         roomClient = new RoomServiceClient();
         eventClient = new EventServiceClient();
+
         personSelector = new PersonSelector();
     }
 
@@ -67,16 +69,19 @@ public class FormationGenerator {
         program.put("coordinatorId", personSelector.randomAdult().get("id"));
 
         program = programClient.createProgram(program);
-        List<Map<String, Object>> classrooms = generateClassrooms(program, classes);
-        linkSessions(program, LocalDate.now());
+
+        Map<String, Object> section = generateSection(program, LocalDate.now());
+
+        List<Map<String, Object>> classrooms = generateClassrooms(program, section, classes);
         Map<Integer, List<Map<String, Object>>> registrations = generateRegistrations(classrooms, 10);
         generateAttendance(classrooms, registrations);
 
         return program;
     }
 
-    private List<Map<String, Object>> generateClassrooms(Map<String, Object> program, List<String> classes) {
-        ClassroomServiceClient classroomClient = new ClassroomServiceClient((int) program.get("id"));
+
+    private List<Map<String, Object>> generateClassrooms(Map<String, Object> program, Map<String, Object> section, List<String> classes) {
+        ClassroomServiceClient classroomClient = new ClassroomServiceClient((int) program.get("id"), (int)section.get("id"));
 
         List<Map<String, Object>> classrooms = new LinkedList<>();
         List<Integer> classRoomIds = randomClassRooms(classes.size());
@@ -85,6 +90,7 @@ public class FormationGenerator {
             Map<String, Object> classroom = new HashMap<>();
             classroom.put("name", name);
             classroom.put("programId", program.get("id"));
+            classroom.put("sectionId", section.get("id"));
             classroom.put("instructorId", personSelector.randomAdult().get("id"));
             classroom.put("roomId", classRoomIds.get(roomIter++));
 
@@ -95,16 +101,16 @@ public class FormationGenerator {
     }
 
 // Sessions
-    private void linkSessions(Map<String, Object> program, LocalDate aroundDate) {
-        SessionServiceClient sessionClient = new SessionServiceClient((int) program.get("id"));
+    private Map<String, Object> generateSection(Map<String, Object> program, LocalDate aroundDate) {
+        SectionServiceClient sectionClient = new SectionServiceClient((int) program.get("id"));
+        Map<String, Object> section =  sectionClient.getDefaultSection();
 
         String eventSearch = String.format("%s startTime:[%s TO %s]", program.get("name"), aroundDate.format(ISO_DATE), aroundDate.plusMonths(1).format(ISO_DATE));
         int recurrenceId = (int)((Map<String,Object>)eventClient.getEvent(eventSearch).get("recurrence")).get("id");
 
-        Map<String, Object> sessions = new HashMap<>();
-        sessions.put("programId", program.get("id"));
-        sessions.put("recurrenceId", recurrenceId);
-        sessionClient.createSession(sessions);
+        section.put("recurrenceId", recurrenceId);
+        sectionClient.updateSection(section);
+        return section;
     }
 
 // Registrations
@@ -140,7 +146,8 @@ public class FormationGenerator {
 // Attendance
     private void generateAttendance(List<Map<String, Object>> classrooms, Map<Integer, List<Map<String, Object>>> registrations) {
         int programId = (int) classrooms.get(0).get("programId");
-        SessionServiceClient sessionClient = new SessionServiceClient(programId);
+        int sectionId = (int) classrooms.get(0).get("sectionId");
+        SessionServiceClient sessionClient = new SessionServiceClient(programId, sectionId);
         AttendanceServiceClient attendanceClient = new AttendanceServiceClient(programId);
         List<Map<String, Object>> sessions = sessionClient.getPastSessions();
 
