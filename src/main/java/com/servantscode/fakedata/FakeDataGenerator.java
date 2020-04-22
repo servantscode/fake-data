@@ -11,10 +11,10 @@ public class FakeDataGenerator extends DataImport {
 
 //        FamilyGenerator.generate(100);
 //        MinistryGenerator.generate(1000);
-//        DonationGenerator.generate(40);
-//        RoomGenerator.generate();
-//        EquipmentGenerator.generate();
-//        EventGenerator.generate();
+        DonationGenerator.generate(40);
+        RoomGenerator.generate();
+        EquipmentGenerator.generate();
+        EventGenerator.generate();
         FormationGenerator.generate();
         new SacramentGenerator().generate();
         LocalDate startOfLastYear = LocalDate.now().withDayOfYear(1).minusYears(1);
