@@ -9,8 +9,8 @@ public class FakeDataGenerator extends DataImport {
     public static void main(String[] args) throws IOException {
 //        doLogin();
 
-//        FamilyGenerator.generate(100);
-//        MinistryGenerator.generate(1000);
+        FamilyGenerator.generate(100);
+        MinistryGenerator.generate(1000);
         DonationGenerator.generate(40);
         RoomGenerator.generate();
         EquipmentGenerator.generate();
