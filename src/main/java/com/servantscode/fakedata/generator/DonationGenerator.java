@@ -47,7 +47,7 @@ public class DonationGenerator {
         int[] donors = RandomSelector.randomNumbers(familyCount, numberOfDonors);
 
         LocalDate start = LocalDate.now().withDayOfYear(1);
-        LocalDate end = LocalDate.now();
+        LocalDate end = start.plusYears(1).minusDays(1);
 
         for(int i=0; i<numberOfDonors; i++) {
             int fundSelector = RandomSelector.rand.nextInt(100);
@@ -98,7 +98,7 @@ public class DonationGenerator {
     private Map<String, Object> generatePledge(int familyId, int fundId, LocalDate start, LocalDate end) {
         String pledgeType = select(PLEDGE_TYPES);
         String pledgeFreq = select(PLEDGE_FREQ);
-        float amount = (float) RandomSelector.rand.nextInt(1000);
+        float amount = (float) RandomSelector.rand.nextInt(999) + 1;
 
         Map<String, Object> pledge = new HashMap<>();
         pledge.put("familyId", familyId);
